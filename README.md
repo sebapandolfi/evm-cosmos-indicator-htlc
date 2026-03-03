@@ -141,8 +141,6 @@ evm-cosmos-indicator-htlc/
 │   ├── deploy-htlc-cosmos.js     # Deploy CosmWasm contract
 │   ├── htlc-quick-test.js        # Test: lock / claim-cosmos / claim-evm / status
 │   └── gas-config.js             # Polygon gas configuration
-├── paper/
-│   └── paper_token_bridge.tex    # Academic paper (LaTeX)
 ├── CONTRACTS_DOCUMENTATION.md
 ├── hardhat.config.js
 ├── package.json
@@ -165,10 +163,6 @@ evm-cosmos-indicator-htlc/
 | Medium | `burn(from)` on any address | Removed; only `burnFromBridge` |
 | Medium | Missing `onERC1155BatchReceived` | Added |
 | Low | `ReceiveTest` no access control | Owner-only |
-
-## Academic Paper
-
-The accompanying academic paper is available in `paper/paper_token_bridge.tex`.
 
 ## Acknowledgments
 
