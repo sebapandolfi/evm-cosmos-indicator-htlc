@@ -1,0 +1,734 @@
+\documentclass[conference,10pt]{IEEEtran}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{tikz}
+\usepackage{balance}
+\usepackage{seqsplit}
+\usepackage{caption}
+\usetikzlibrary{shapes.geometric, arrows, positioning, fit, backgrounds}
+
+% Hyperref configuration
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue
+}
+
+% Code listings configuration
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!50!black},
+    stringstyle=\color{red!60!black},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    numbersep=3pt,
+    xleftmargin=1em,
+    framexleftmargin=1em
+}
+
+% Define JSON language for listings
+\lstdefinelanguage{json}{
+    basicstyle=\ttfamily\footnotesize,
+    morestring=[b]",
+    stringstyle=\color{red!60!black},
+    literate=
+     *{:}{{{\color{blue}:}}}{1}
+      {,}{{{\color{blue},}}}{1}
+      {\{}{{{\color{blue}\{}}}{1}
+      {\}}{{{\color{blue}\}}}}{1}
+      {[}{{{\color{blue}[}}}{1}
+      {]}{{{\color{blue}]}}}{1}
+}
+
+% Define Solidity language for listings
+\lstdefinelanguage{Solidity}{
+    keywords={function, external, internal, public, private, view, pure, payable, returns, return, if, else, for, while, memory, calldata, storage, string, uint256, address, bytes, bytes32, bool, mapping, struct, contract, import, pragma, require, emit, event, modifier},
+    morecomment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    morestring=[b]",
+    morestring=[b]',
+    sensitive=true
+}
+
+% Define Rust language for listings
+\lstdefinelanguage{Rust}{
+    keywords={fn, let, mut, if, else, for, while, loop, match, return, pub, struct, enum, impl, use, mod, self, Self, Ok, Err, Some, None, Result, Option, String, Vec, u128, u64, u32, u8, bool},
+    morecomment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    morestring=[b]",
+    sensitive=true
+}
+
+% Caption setup for listings - add space between caption and code
+\captionsetup[lstlisting]{skip=8pt}
+
+% Custom commands
+\newcommand{\ie}{\textit{i.e.}}
+\newcommand{\eg}{\textit{e.g.}}
+\newcommand{\etal}{\textit{et al.}}
+
+\begin{document}
+
+\title{Atomic Cross-Chain Transfer of Environmental Indicator Tokens via HTLC with Automatic Callback: An EVM-Cosmos Implementation}
+
+\author{
+    \IEEEauthorblockN{
+        Sebastian Pandolfi\IEEEauthorrefmark{1}, 
+        Guzm\'an Llamb\'ias\IEEEauthorrefmark{1}\IEEEauthorrefmark{2},
+        Laura Gonz\'alez\IEEEauthorrefmark{1}
+    }
+    \\
+    \IEEEauthorblockA{
+        \IEEEauthorrefmark{1}Facultad de Ingenier\'ia, Universidad de la Rep\'ublica, Montevideo, Uruguay\\
+        \{sebastian.pandolfi, gllambi, lauragon\}@fing.edu.uy
+    }
+    \IEEEauthorblockA{
+        \IEEEauthorrefmark{2}Pyxis Research, Pyxis, Montevideo, Uruguay\\
+        guzman.llambias@pyxis.tech
+    }
+}
+
+\maketitle
+
+%=============================================================================
+\begin{abstract}
+%=============================================================================
+Blockchain interoperability remains a fundamental challenge in the decentralized ecosystem, particularly when bridging heterogeneous networks with incompatible protocols. This paper presents the design, implementation, and production deployment of an atomic cross-chain token bridge for \textit{environmental indicators}---tokenized representations of environmental measurements such as CO$_2$ removals or energy consumption---connecting Ethereum Virtual Machine (EVM) compatible chains with Cosmos-based networks. We introduce a three-layer architecture comprising a \textit{Profile Layer} (cryptographic commitment to indicator metadata), a \textit{Semantic Binding Layer} (ERC-1155/CW1155 multi-token with deterministic identity), and a \textit{Governance Layer} (owner-gated token class creation and bridge-only minting). To guarantee atomicity of cross-chain transfers, we implement a \textit{Hash Time-Locked Contract} (HTLC) protocol with an \textit{automatic GMP callback}: when tokens are minted on the destination chain, a callback message triggers the burn of escrowed tokens on the source chain, eliminating the timeout race condition inherent in standard HTLC designs. Axelar Network's General Message Passing (GMP) protocol serves as the interoperability layer. A comprehensive security audit identified and mitigated 10 vulnerabilities. Our proof-of-concept, deployed on Polygon and Neutron mainnets, demonstrates successful atomic transfers of semantically-bound indicator tokens with cryptographic safety guarantees.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Blockchain interoperability, cross-chain bridge, environmental indicators, Hash Time-Locked Contracts, HTLC, ERC-1155, semantic binding, Axelar, General Message Passing, EVM, Cosmos, CosmWasm
+\end{IEEEkeywords}
+
+%=============================================================================
+\section{Introduction}
+\label{sec:introduction}
+%=============================================================================
+
+The proliferation of blockchain networks has created a fragmented ecosystem where assets and data remain siloed within individual chains. As of 2024, there exist over 1,000 active blockchain networks~\cite{defillama2024}, each with distinct consensus mechanisms, execution environments, and communication protocols. This fragmentation poses significant challenges for users and developers seeking to leverage the unique capabilities of multiple networks.
+
+Cross-chain interoperability---the ability to transfer assets and messages between heterogeneous blockchain networks---has emerged as a critical infrastructure requirement. The total value locked (TVL) in cross-chain bridges exceeded \$15 billion in 2024~\cite{l2beat2024}, underscoring the demand for such solutions. However, bridge implementations have also been the target of significant security exploits, with over \$2 billion lost to bridge-related attacks~\cite{chainalysis2024}.
+
+A particularly challenging domain for cross-chain interoperability is \textbf{environmental indicator tokens}---tokenized representations of environmental measurements such as CO$_2$ removals, energy consumption, or water usage. Unlike fungible currencies, these tokens carry \textit{semantic meaning}: a token representing 1 kgCO$_2$e of carbon removal under one methodology is fundamentally different from a token representing 1 kWh of energy consumption, even if both have the same numeric value. Naive bridging with ERC-20 tokens causes \textit{semantic mixing}, where tokens with different environmental meanings are incorrectly treated as interchangeable.
+
+This paper addresses two intertwined challenges: (1) ensuring \textit{atomicity}---the guarantee that either the complete transfer succeeds on both chains or no state change occurs---and (2) preserving \textit{semantic integrity}---the guarantee that the environmental meaning of tokens is maintained across heterogeneous chains.
+
+\subsection{Contributions}
+
+This paper makes the following contributions:
+
+\begin{enumerate}
+    \item We present a \textbf{three-layer architecture for environmental indicator tokens}: a Profile Layer for cryptographic metadata commitment, a Semantic Binding Layer using ERC-1155/CW1155 for deterministic identity, and a Governance Layer controlling token class creation and minting authority.
+    
+    \item We introduce an HTLC protocol with an \textbf{automatic GMP callback}: when the user reveals the secret on Cosmos to claim minted tokens, the contract automatically emits callback data that triggers burning of escrowed tokens on EVM, closing the timeout race condition inherent in standard HTLC designs.
+    
+    \item We demonstrate that \textbf{semantic binding is preserved cross-chain}: the deterministic \texttt{indicatorId} = keccak256(\texttt{profileHash}) identity travels in the GMP payload, and the destination contract validates token class existence before minting, preventing semantic mixing.
+    
+    \item We conduct a comprehensive security audit identifying and mitigating 10 vulnerabilities across both EVM and CosmWasm contracts, including unauthorized minting, input validation flaws, reentrancy risks, and double-spend vectors.
+    
+    \item We release an open-source implementation deployed on Polygon and Neutron mainnets to enable reproducibility and further research.
+\end{enumerate}
+
+\subsection{Paper Organization}
+
+The remainder of this paper is organized as follows. Section~\ref{sec:background} provides background on blockchain interoperability, environmental indicators, and the technologies employed. Section~\ref{sec:related} reviews related work. Section~\ref{sec:design} presents our system design including the three-layer indicator architecture and the HTLC protocol with automatic callback. Section~\ref{sec:implementation} describes the implementation details. Section~\ref{sec:evaluation} presents evaluation results from mainnet deployment. Section~\ref{sec:discussion} discusses security analysis, semantic properties, and limitations. Section~\ref{sec:conclusion} concludes the paper.
+
+%=============================================================================
+\section{Background}
+\label{sec:background}
+%=============================================================================
+
+This section provides the necessary background on blockchain interoperability, environmental indicators, and the fundamental concepts underlying our approach.
+
+\subsection{Blockchain Interoperability Challenge}
+
+Blockchain networks are designed as isolated systems with self-contained consensus and state management. Cross-chain communication presents significant challenges, including maintaining ACID properties (Atomicity, Consistency, Isolation, Durability) across heterogeneous systems with different transaction structures and consensus mechanisms~\cite{wang2021}.
+
+\subsection{EVM and Cosmos Ecosystems}
+
+The Ethereum Virtual Machine (EVM) represents the dominant smart contract execution environment, with over 70\% of decentralized application value concentrated in EVM-compatible chains~\cite{defillama2024}. EVM chains utilize Solidity smart contracts, hexadecimal addresses, and RLP-encoded transactions.
+
+The Cosmos ecosystem employs the Tendermint consensus engine, the Cosmos SDK application framework, and the Inter-Blockchain Communication (IBC) protocol for native cross-chain messaging~\cite{ibc2024}. Smart contracts in Cosmos typically utilize CosmWasm, a WebAssembly-based runtime supporting Rust-based contracts.
+
+Table~\ref{tab:comparison} summarizes the key differences between these ecosystems.
+
+\begin{table}[t]
+\centering
+\caption{Comparison of EVM and Cosmos Ecosystem Characteristics}
+\label{tab:comparison}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Property} & \textbf{EVM} & \textbf{Cosmos} \\
+\midrule
+Virtual Machine & EVM & CosmWasm/Native \\
+Smart Contract Lang. & Solidity & Rust \\
+Address Format & Hex (0x...) & Bech32 (prefix...) \\
+Native Interop. & None & IBC Protocol \\
+Transaction Format & RLP & Protobuf \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Axelar Network}
+
+Axelar Network~\cite{axelar2024} provides a decentralized interoperability protocol connecting heterogeneous blockchain networks. Its General Message Passing (GMP) protocol enables arbitrary message transmission between supported chains through a network of validators that observe, verify, and relay cross-chain messages.
+
+For Cosmos chains, Axelar uses IBC to deliver messages, with a special payload encoding (Version 0x00000002) that enables direct JSON message passing to CosmWasm contracts.
+
+\subsection{Environmental Indicators and the Semantic Mixing Problem}
+\label{sec:indicators}
+
+Environmental indicators are quantitative measurements of environmental impact---for example, tonnes of CO$_2$ removed, kilowatt-hours of renewable energy generated, or liters of water treated. When tokenized on a blockchain, each indicator carries rich metadata: the \textit{indicator type} (e.g., CO$_2$\_REMOVAL), the \textit{canonical unit} (e.g., kgCO$_2$e), the \textit{methodology} under which the measurement was performed, and cryptographic hashes of the underlying \textit{profile} and \textit{evidence data}.
+
+A fundamental challenge arises when bridging these tokens cross-chain. Standard ERC-20 tokens are fully fungible: 1 token equals 1 token regardless of origin. However, environmental indicators are \textbf{semantically heterogeneous}: a CO$_2$ removal credit is not interchangeable with an energy certificate, even if both are represented as ``1 token.'' Bridging with naive ERC-20 tokens causes \textit{semantic mixing}---the loss of the indicator's environmental meaning during transfer.
+
+This problem requires a token standard that supports \textit{multiple classes} within a single contract, where fungibility exists \textit{within} a class but not \textit{across} classes. The ERC-1155 multi-token standard~\cite{erc1155} provides exactly this capability, where each \texttt{tokenId} can represent a distinct semantic class.
+
+\subsection{Token Transfer Mechanisms}
+
+Cross-chain token transfers fundamentally require reconciling token supply across independent ledgers. The literature identifies two primary paradigms~\cite{zamyatin2021,robinson2022}:
+
+\textbf{Burn-and-Mint:} Tokens are permanently destroyed (burned) on the source chain. Upon verification, an equivalent amount is minted on the destination chain, ensuring global supply conservation.
+
+\textbf{Lock-and-Mint:} Tokens are locked in a custodial contract on the source chain while representative tokens are minted on the destination. This enables reversibility but introduces custodial risk.
+
+\subsection{Atomicity in Distributed Systems}
+
+Atomicity is a fundamental property in distributed systems, ensuring that a transaction either completes entirely or has no effect. The \textit{Two-Phase Commit} (2PC) protocol~\cite{gray1978} is a classic solution, but requires a trusted coordinator. Hash Time-Locked Contracts (HTLCs)~\cite{herlihy2018} provide an alternative using cryptographic hash locks as the ``prepare'' phase and time locks as the ``abort'' mechanism.
+
+%=============================================================================
+\section{Related Work}
+\label{sec:related}
+%=============================================================================
+
+\textbf{Gravity Bridge}~\cite{gravity2022} connects Ethereum to Cosmos using a dedicated validator set. Unlike our approach, it requires maintaining separate validators and lacks explicit atomicity guarantees. It also provides no mechanism for semantic binding of heterogeneous token types.
+
+\textbf{Axelar ITS}~\cite{axelar2024its} provides standardized token bridging optimized for EVM-to-EVM transfers. Our work extends Axelar's GMP for bidirectional EVM-Cosmos integration with HTLC atomicity and semantic binding for environmental indicators.
+
+\textbf{Wormhole}~\cite{wormhole2024} implements a guardian network for cross-chain attestation. Our approach adds an explicit HTLC layer with automatic callback for atomicity and a three-layer indicator architecture for semantic integrity.
+
+Herlihy~\cite{herlihy2018} provides formal analysis of atomic cross-chain swaps using HTLCs. Our implementation extends this with an automatic callback mechanism that closes the timeout race condition, and applies it to semantically-typed environmental tokens rather than fungible currencies.
+
+Zamyatin \etal~\cite{zamyatin2021} systematize cross-chain protocols into notary schemes, relay chains, and HTLCs. Our work combines the relay chain approach (Axelar) with HTLC atomicity, automatic settlement, and domain-specific semantic binding.
+
+None of the existing bridge solutions address the semantic mixing problem for heterogeneous environmental indicators. Table~\ref{tab:bridges} compares key features.
+
+\begin{table}[t]
+\centering
+\caption{Comparison of EVM-Cosmos Bridge Approaches}
+\label{tab:bridges}
+\footnotesize
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Feature} & \textbf{Gravity} & \textbf{Wormhole} & \textbf{ITS} & \textbf{Ours} \\
+\midrule
+Bidirectional & Limited & Yes & Yes & Yes \\
+HTLC Atomicity & No & No & No & Yes \\
+Auto Callback & No & No & No & Yes \\
+Semantic Binding & No & No & No & Yes \\
+Multi-token (1155) & No & No & No & Yes \\
+Mainnet deployed & Yes & Yes & Yes & Yes \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%=============================================================================
+\section{System Design}
+\label{sec:design}
+%=============================================================================
+
+This section presents the architectural design of our system, including the three-layer environmental indicator architecture, the HTLC protocol with automatic GMP callback, and the cross-chain semantic consistency mechanism.
+
+\subsection{Three-Layer Environmental Indicator Architecture}
+\label{sec:three-layer}
+
+To solve the semantic mixing problem described in Section~\ref{sec:indicators}, we introduce a three-layer architecture that preserves the environmental meaning of tokens across heterogeneous chains:
+
+\textbf{Layer 1 --- Profile Layer (Cryptographic Commitment):} Each environmental indicator is described by an off-chain profile containing the indicator type, canonical unit, methodology identifier, and evidence data. Two cryptographic hashes anchor this profile on-chain: \texttt{profileHash} (hash of the full indicator profile) and \texttt{dataHash} (hash of the evidence data bundle). A deterministic \texttt{indicatorId} is derived as:
+\begin{equation}
+\texttt{indicatorId} = \text{keccak256}(\texttt{profileHash})
+\end{equation}
+
+This ensures that the same environmental profile always produces the same identity on any chain.
+
+\textbf{Layer 2 --- Semantic Binding Layer (Multi-Token Identity):} Each \texttt{tokenId} in the ERC-1155 contract is immutably bound to exactly one \texttt{indicatorId}. The binding is stored as a bidirectional mapping (\texttt{tokenToIndicator} and \texttt{indicatorToToken}) and cannot be modified after creation. Fungibility exists \textit{only within the same tokenId}---tokens with different indicator types, units, or methodologies occupy separate token classes and cannot be mixed. The on-chain metadata struct stores:
+
+\begin{lstlisting}[caption={IndicatorMetadata (Solidity, EVM)}, label=lst:metadata, language=Solidity]
+struct IndicatorMetadata {
+    string indicatorType;  // "CO2_REMOVAL"
+    string unit;           // "kgCO2e"
+    string methodologyId;  // "METHODOLOGY_001"
+    bytes32 profileHash;   // H(full profile)
+    bytes32 dataHash;      // H(evidence bundle)
+    uint256 createdAt;
+}
+\end{lstlisting}
+
+On Cosmos, the CosmWasm contract maintains a mirror registry:
+
+\begin{lstlisting}[caption={TokenClass (Rust, CosmWasm)}, label=lst:tokenclass, language=Rust]
+pub struct TokenClass {
+    pub token_id: String,
+    pub indicator_id: String,
+    pub indicator_type: String,
+    pub unit: String,
+    pub methodology_id: String,
+    pub profile_hash: String,
+    pub data_hash: String,
+    pub created_at: u64,
+}
+\end{lstlisting}
+
+\textbf{Layer 3 --- Governance Layer (Controlled Issuance):} Token class creation is restricted to the contract owner via \texttt{createTokenClass}, acting as a governance gate: only approved indicator types with valid profiles can enter the system. Minting authority is restricted to the bridge contract---the owner can only create token classes and set up initial supply via \texttt{mintInitialSupply}, but cannot mint arbitrary tokens during normal operation. On Cosmos, an \texttt{AUTHORIZED\_SENDERS} whitelist ensures only the Axelar IBC relay can create HTLC locks.
+
+Table~\ref{tab:layers} summarizes the three layers and their enforcement mechanisms.
+
+\begin{table}[t]
+\centering
+\caption{Three-Layer Environmental Indicator Architecture}
+\label{tab:layers}
+\footnotesize
+\begin{tabular}{@{}lp{2.2cm}p{3cm}@{}}
+\toprule
+\textbf{Layer} & \textbf{Purpose} & \textbf{Enforcement} \\
+\midrule
+Profile & Cryptographic commitment to indicator metadata & \texttt{profileHash}, \texttt{dataHash}, deterministic \texttt{indicatorId} \\
+\midrule
+Semantic Binding & Immutable token-to-indicator identity & ERC-1155 \texttt{tokenId} $\leftrightarrow$ \texttt{indicatorId} mapping; CW1155 \texttt{TokenClass} registry \\
+\midrule
+Governance & Controlled issuance and bridge authority & Owner-only \texttt{createTokenClass}; bridge-only \texttt{mint}; \texttt{AUTHORIZED\_SENDERS} whitelist \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Cross-Chain Semantic Consistency}
+\label{sec:semantic-consistency}
+
+A critical requirement is that the semantic identity of an indicator token is preserved when it crosses chains. Our design ensures this through the GMP payload: when \texttt{lockForBurn} is called on EVM, the bridge contract reads the \texttt{indicatorId} from the token contract and includes it in the GMP message sent to Cosmos:
+
+\begin{lstlisting}[caption={GMP Payload with Indicator Identity}, label=lst:payload, language=json]
+{
+  "prepare_mint": {
+    "hashlock": "0x...",
+    "indicator_id": "0x...",
+    "token_id": "1",
+    "amount": "10000000000000000000",
+    "cosmos_recipient": "neutron1...",
+    "timeout": "1771191838",
+    "source_chain": "Polygon",
+    "source_address": "0x078154e9..."
+  }
+}
+\end{lstlisting}
+
+On Cosmos, \texttt{prepare\_mint} validates that the \texttt{token\_id} corresponds to a registered \texttt{TokenClass} before creating the HTLC lock. Similarly, \texttt{claim\_mint} re-validates token class existence before minting. This ensures that tokens can only be minted into existing, pre-approved semantic classes---preventing both semantic mixing and unauthorized indicator type creation during cross-chain transfers.
+
+Because \texttt{indicatorId} is derived deterministically from \texttt{profileHash}, the same environmental profile produces the same identity on both EVM and Cosmos, guaranteeing \textit{cross-chain semantic reproducibility}.
+
+\subsection{Architecture Overview}
+
+Our system implements a three-layer bridge architecture connecting EVM and Cosmos ecosystems through Axelar's GMP protocol:
+
+\textbf{EVM Layer (Polygon Mainnet):} Contains \texttt{IndicatorToken1155} (ERC-1155 with semantic binding, profile metadata, and governance controls) and \texttt{BridgeHTLC} (HTLC bridge with reentrancy guards, bech32 validation, minimum timelock, and automatic callback handling via \texttt{\_execute}).
+
+\textbf{Axelar Network Layer:} Bidirectional relay. Forwards GMP\textsubscript{1} (lock message with \texttt{indicatorId}) from EVM to Cosmos, and can forward GMP\textsubscript{2} (callback with secret) from Cosmos to EVM.
+
+\textbf{Cosmos Layer (Neutron Mainnet):} Contains the HTLC Bridge Receiver (CosmWasm) with authorized sender whitelist, \texttt{TokenClass} registry mirroring EVM metadata, strict input validation, and automatic callback emission on claim.
+
+\subsection{HTLC Protocol with Automatic Callback}
+\label{sec:double-spend}
+
+Our HTLC protocol uses bidirectional GMP to ensure atomicity. The key innovation is that \textbf{minting on Cosmos automatically triggers burning on EVM}:
+
+\textbf{EVM $\rightarrow$ Cosmos Transfer:}
+\begin{enumerate}
+    \item User generates secret $S$ off-chain, computes $H = \text{keccak256}(S)$
+    \item User calls \texttt{lockForBurn(tokenId, amount, H, timeout, recipient)} on EVM
+    \item EVM escrows tokens, reads \texttt{indicatorId}, sends GMP\textsubscript{1} via Axelar
+    \item Cosmos receives GMP\textsubscript{1}, validates token class, registers pending HTLC
+    \item User reveals $S$ on Cosmos: \texttt{claimMint(H, S)}
+    \item Cosmos verifies $\text{keccak256}(S) = H$, validates token class, mints tokens
+    \item \textbf{Cosmos emits callback data} with ABI-encoded $(H, S)$ for EVM
+    \item EVM \texttt{\_execute} receives callback, verifies, \textbf{burns} escrowed tokens
+\end{enumerate}
+
+Steps 7--8 constitute the automatic callback. A manual \texttt{claimBurn(H, S)} function is retained as fallback.
+
+\textbf{Timeout Recovery:}
+\begin{itemize}
+    \item Cosmos timeout $T_c = T_e - 30$ min (shorter than EVM timeout $T_e$)
+    \item If user does not reveal $S$ before $T_c$: anyone calls \texttt{refundMint(H)}
+    \item After $T_e$: user calls \texttt{refundBurn(H)} to recover tokens
+\end{itemize}
+
+\textbf{Double-Spend Prevention:} The automatic callback ensures the burn happens within minutes of the Cosmos claim, well before the EVM refund window ($T_e$) opens. Three layers of protection: (1) automatic callback as primary mechanism, (2) permissionless manual \texttt{claimBurn} as fallback, (3) 30-minute timeout buffer as safety margin.
+
+Algorithm~\ref{alg:htlc} presents the complete protocol.
+
+\begin{algorithm}[t]
+\caption{HTLC Atomic Transfer with Automatic Callback}
+\label{alg:htlc}
+\begin{algorithmic}[1]
+\Require User $U$, tokenId $T$, amount $A$, Cosmos recipient $R$
+\Ensure Atomic transfer with semantic consistency
+
+\Statex \textbf{Phase 1: Lock (EVM)}
+\State $U$ generates random secret $S$ (32 bytes)
+\State $H \gets \text{keccak256}(S)$
+\State $T_e \gets \text{now} + 2\text{ hours}$; $T_c \gets T_e - 30\text{ min}$
+\State $U$ invokes \texttt{lockForBurn($T$, $A$, $H$, $T_e$, $R$)}
+\State Contract reads \texttt{indicatorId} from token class
+\State Contract escrows $(T, A)$; sends GMP\textsubscript{1}: $(H, \texttt{indicatorId}, T, A, R, T_c)$
+
+\Statex \textbf{Phase 2: Prepare (Cosmos)}
+\State Cosmos receives GMP\textsubscript{1}; verifies authorized sender
+\State Cosmos validates \texttt{TokenClass} exists for \texttt{token\_id}
+\State Cosmos registers pending mint: state[$H$] = PENDING
+
+\Statex \textbf{Phase 3a: Claim + Callback (Success Path)}
+\State $U$ invokes \texttt{claimMint($H$, $S$)} on Cosmos
+\State Cosmos verifies $\text{keccak256}(S) = H$ (strict 32-byte hex)
+\State Cosmos re-validates \texttt{TokenClass}; mints $A$ tokens to $R$
+\State \textbf{Cosmos emits callback}: ABI-encode$(H, S)$ for EVM
+\State EVM \texttt{\_execute} receives callback; burns escrowed tokens
+
+\Statex \textbf{Phase 3b: Refund (Timeout Path)}
+\If{$\text{now} > T_c$ AND state[$H$] = PENDING on Cosmos}
+    \State Anyone invokes \texttt{refundMint($H$)}; state[$H$] = REFUNDED
+\EndIf
+\If{$\text{now} > T_e$ AND state[$H$] = LOCKED on EVM}
+    \State $U$ invokes \texttt{refundBurn($H$)}; tokens returned
+\EndIf
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Smart Contract Design}
+
+\textbf{EVM contracts:}
+\begin{enumerate}
+    \item \textbf{IndicatorToken1155}: ERC-1155 multi-token with \texttt{IndicatorMetadata} per token class. Owner-gated \texttt{createTokenClass} with deterministic \texttt{indicatorId}. Bridge-only \texttt{mint}; owner-only \texttt{mintInitialSupply}. No generic \texttt{burn}---only \texttt{burnFromBridge}.
+    \item \textbf{BridgeHTLC}: HTLC bridge with ReentrancyGuard, bech32 validation, minimum 1-hour timelock, and \texttt{\_execute} callback handler. Reads \texttt{indicatorId} from token contract for GMP payload.
+\end{enumerate}
+
+\textbf{CosmWasm contract} (\texttt{token\_bridge\_receiver}):
+\begin{itemize}
+    \item \texttt{AUTHORIZED\_SENDERS} whitelist for \texttt{prepare\_mint}
+    \item \texttt{TOKEN\_CLASSES} registry with \texttt{TokenClass} structs
+    \item Token class existence validation before HTLC creation and minting
+    \item Strict 32-byte hex validation for secrets and hashlocks
+    \item Automatic callback emission on \texttt{claim\_mint}
+    \item CW1155-style multi-token balances per (\texttt{address}, \texttt{token\_id})
+\end{itemize}
+
+\subsection{Message Format}
+
+Forward messages (EVM$\to$Cosmos) use Axelar GMP Version 0x00000002 with JSON payloads containing \texttt{indicator\_id} for semantic consistency. Callback messages (Cosmos$\to$EVM) use ABI-encoded payloads: \texttt{abi.encode(bytes32 hashlock, bytes32 secret)} (64 bytes).
+
+%=============================================================================
+\section{Implementation}
+\label{sec:implementation}
+%=============================================================================
+
+\subsection{Technology Stack}
+
+\begin{table}[t]
+\centering
+\caption{Implementation Technology Stack}
+\label{tab:stack}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Component} & \textbf{Technology} \\
+\midrule
+EVM Contracts & Solidity 0.8.19 \\
+EVM Framework & Hardhat 2.x \\
+Cosmos Contracts & Rust + CosmWasm 1.5 \\
+Wasm Optimizer & cosmwasm/optimizer:0.15.0 \\
+Source Chain & Polygon Mainnet (Chain ID: 137) \\
+Destination Chain & Neutron Mainnet (neutron-1) \\
+Bridge Protocol & Axelar GMP (Mainnet) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Deployment}
+
+Contracts were deployed to production mainnets. Table~\ref{tab:addresses} lists the deployed addresses.
+
+\begin{table}[t]
+\centering
+\caption{Deployed Contract Addresses (Production Mainnet)}
+\label{tab:addresses}
+\footnotesize
+\begin{tabular}{@{}lp{5cm}@{}}
+\toprule
+\textbf{Contract} & \textbf{Address} \\
+\midrule
+\multicolumn{2}{l}{\textit{Polygon Mainnet (Chain ID: 137)}} \\
+IndicatorToken1155 & \texttt{\seqsplit{0x7Dbf7583c758e34D2CB4F3fd1E8C998E5469345a}} \\
+BridgeHTLC & \texttt{\seqsplit{0x078154e912A94f57be962A7B3926dbcaF0eD27e0}} \\
+\midrule
+\multicolumn{2}{l}{\textit{Neutron Mainnet (neutron-1)}} \\
+HTLC Bridge Receiver & \texttt{\seqsplit{neutron1d9k5ceh44555gxru06zk56cm8wd0hf683y77xncq9kmlzmaaxjyqgew60j}} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%=============================================================================
+\section{Evaluation}
+\label{sec:evaluation}
+%=============================================================================
+
+We evaluate our implementation through experiments on production mainnets, measuring transaction costs, latency, and verifying both atomicity and semantic consistency.
+
+\subsection{HTLC Transfer Results}
+
+Table~\ref{tab:htlc_results} presents end-to-end results for an atomic transfer of semantically-bound indicator tokens from Polygon to Neutron.
+
+\begin{table}[t]
+\centering
+\caption{HTLC Atomic Transfer Results (Polygon $\rightarrow$ Neutron)}
+\label{tab:htlc_results}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+\multicolumn{2}{l}{\textit{Phase 1: Lock (Polygon)}} \\
+Amount Locked & 10 CO$_2$\_REMOVAL tokens \\
+Indicator Type & CO$_2$\_REMOVAL (kgCO$_2$e) \\
+Lock TX & \texttt{\seqsplit{0xfb49a7ed...9a3c9512}} \\
+Gas Used & 533,627 \\
+\midrule
+\multicolumn{2}{l}{\textit{Phase 2: GMP Relay (Axelar)}} \\
+Relay Time & $\sim$2.5 minutes \\
+Payload includes \texttt{indicator\_id} & \checkmark \\
+\midrule
+\multicolumn{2}{l}{\textit{Phase 3: Claim + Callback (Neutron)}} \\
+Claim TX & \texttt{\seqsplit{70D848ED...62CAD8C5}} \\
+Gas Used & 234,523 \\
+Callback Status & READY \\
+Token Class Validated & \checkmark \\
+\midrule
+\multicolumn{2}{l}{\textit{Phase 4: Burn (Polygon)}} \\
+Burn TX & \texttt{\seqsplit{0x23a101b7...e9aeaaa1}} \\
+Gas Used & 95,914 \\
+\midrule
+Atomicity Verified & \checkmark \\
+Semantic Binding Preserved & \checkmark \\
+Supply Conserved & \checkmark \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Atomicity and Semantic Verification}
+
+The HTLC protocol with automatic callback was verified:
+
+\begin{enumerate}
+    \item After \texttt{lockForBurn}, 10 CO$_2$\_REMOVAL tokens were escrowed. The GMP payload included the deterministic \texttt{indicatorId} derived from the token class profile.
+    
+    \item On Neutron, \texttt{prepare\_mint} validated the authorized sender and confirmed that token class ``1'' (CO$_2$\_REMOVAL, kgCO$_2$e) exists in the \texttt{TOKEN\_CLASSES} registry before creating the HTLC lock.
+    
+    \item User revealed the secret via \texttt{claimMint}. The contract re-validated token class existence, minted 10 tokens into the correct semantic class, and emitted callback data.
+    
+    \item The callback payload was used to burn escrowed tokens on Polygon. Total supply conserved: 90 (EVM) + 10 (Cosmos) = 100.
+    
+    \item The semantic binding was preserved: tokens on Cosmos were minted into token class ``1'' with the same indicator type, unit, and methodology as on EVM.
+\end{enumerate}
+
+\subsection{Transaction Costs}
+
+\begin{table}[t]
+\centering
+\caption{Transaction Costs by Operation and Layer}
+\label{tab:gas}
+\footnotesize
+\begin{tabular}{@{}llr@{}}
+\toprule
+\textbf{Layer} & \textbf{Operation} & \textbf{Cost} \\
+\midrule
+\multicolumn{3}{l}{\textit{Polygon Mainnet (EVM)}} \\
+& lockForBurn (HTLC lock + GMP) & 533,627 gas \\
+& claimBurn (burn escrowed) & 95,914 gas \\
+& IndicatorToken1155 Deploy & $\sim$3,000,000 gas \\
+& BridgeHTLC Deploy & $\sim$3,500,000 gas \\
+\midrule
+\multicolumn{3}{l}{\textit{Axelar Network}} \\
+& GMP Relay Fee & $\sim$1.0 MATIC \\
+& Relay Latency & $\sim$2.5 minutes \\
+\midrule
+\multicolumn{3}{l}{\textit{Neutron Mainnet (Cosmos)}} \\
+& claimMint (HTLC claim + callback) & 234,523 gas \\
+& Contract Upload (Code ID: 5164) & $\sim$2,500,000 gas \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%=============================================================================
+\section{Discussion}
+\label{sec:discussion}
+%=============================================================================
+
+\subsection{Security Audit}
+
+We conducted a comprehensive security audit identifying 10 vulnerabilities. Table~\ref{tab:security} summarizes the findings.
+
+\begin{table}[t]
+\centering
+\caption{Security Vulnerabilities Identified and Mitigated}
+\label{tab:security}
+\footnotesize
+\begin{tabular}{@{}llp{3.5cm}@{}}
+\toprule
+\textbf{Severity} & \textbf{Component} & \textbf{Issue and Fix} \\
+\midrule
+Critical & CosmWasm & No access control on \texttt{prepare\_mint}. Fixed: authorized sender whitelist. \\
+Critical & CosmWasm & \texttt{verify\_hashlock} accepts malformed input. Fixed: strict 32-byte hex validation. \\
+High & BridgeHTLC & JSON injection via recipient. Fixed: bech32 character validation. \\
+High & BridgeHTLC & Timeout too short for GMP. Fixed: 1-hour minimum enforced. \\
+High & CosmWasm & Mint without token class check. Fixed: class existence validation. \\
+Medium & BridgeHTLC & CEI violation in lock. Fixed: state-before-transfer + ReentrancyGuard. \\
+Medium & Token1155 & Owner can mint bypassing bridge. Fixed: bridge-only minting. \\
+Medium & Token1155 & \texttt{burn(from)} on any address. Fixed: removed, only \texttt{burnFromBridge}. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Double-Spend Prevention}
+
+We analyzed 8 potential double-spending scenarios. Seven are prevented by the HTLC state machine (hashlock uniqueness, state checks, atomic transactions). The eighth---the \textbf{timeout race condition}---is addressed by our automatic callback mechanism.
+
+Without the callback, a malicious user could: (1) claim on Cosmos at time $T_c - \epsilon$, minting tokens; (2) wait until $T_e$ expires; (3) call \texttt{refundBurn} on EVM, recovering the original tokens. Our callback ensures the burn happens within minutes of the claim, well before $T_e$.
+
+\subsection{Semantic Binding Guarantees}
+
+The three-layer architecture (Section~\ref{sec:three-layer}) provides the following guarantees for environmental indicator integrity:
+
+\begin{enumerate}
+    \item \textbf{No semantic mixing}: Tokens with different \texttt{indicatorId} values occupy separate token classes. ERC-1155 enforces that operations on \texttt{tokenId=1} (CO$_2$ removal) cannot affect \texttt{tokenId=2} (energy). This holds across chains because the Cosmos contract maintains an independent \texttt{TOKEN\_CLASSES} registry.
+    
+    \item \textbf{Deterministic identity}: Given the same \texttt{profileHash}, both chains compute the same \texttt{indicatorId} = keccak256(\texttt{profileHash}). This enables cross-chain verification without additional coordination.
+    
+    \item \textbf{Governance-gated issuance}: New indicator types require explicit \texttt{createTokenClass} calls by the contract owner on both chains. This prevents unauthorized indicator types from entering the system during bridging.
+    
+    \item \textbf{Indicator metadata preservation}: The \texttt{indicatorType}, \texttt{unit}, \texttt{methodologyId}, \texttt{profileHash}, and \texttt{dataHash} are stored on-chain in both the EVM \texttt{IndicatorMetadata} struct and the CosmWasm \texttt{TokenClass} struct, enabling independent auditability on each chain.
+\end{enumerate}
+
+\subsection{Limitations}
+
+\begin{enumerate}
+    \item \textbf{User must stay online}: The user must reveal the secret before $T_c$.
+    \item \textbf{Callback depends on Axelar}: If GMP relay fails, manual \texttt{claimBurn} is needed.
+    \item \textbf{No formal verification}: Algorithmic description provided; formal proofs are future work.
+    \item \textbf{CosmWasm IBC permissions}: Direct IBC callbacks require contract-level permissions; our implementation emits callback data as events for relay.
+    \item \textbf{Off-chain profile storage}: The full indicator profile and evidence data are stored off-chain; only their cryptographic hashes are on-chain. Profile availability depends on off-chain infrastructure.
+    \item \textbf{Owner-based governance}: Token class creation is gated by a single owner address rather than a decentralized governance mechanism (e.g., DAO voting).
+\end{enumerate}
+
+\subsection{Future Work}
+
+\begin{enumerate}
+    \item \textbf{Native IBC callback}: When CosmWasm environments grant IBC permissions to contracts, the callback can be sent directly.
+    \item \textbf{Decentralized governance}: Replace owner-based token class creation with DAO-based voting, where indicator types are proposed and approved by stakeholders.
+    \item \textbf{On-chain profile registry}: Store indicator profiles on a decentralized storage layer (e.g., IPFS with on-chain CIDs) to eliminate off-chain availability risk.
+    \item \textbf{Formal verification}: Model checking of the HTLC + callback protocol and the semantic binding invariants.
+    \item \textbf{Multi-chain extension}: Multi-hop atomic swaps of indicator tokens across $>$2 chains while preserving semantic binding.
+\end{enumerate}
+
+%=============================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+%=============================================================================
+
+This paper presented the design, implementation, and production deployment of an atomic cross-chain bridge for environmental indicator tokens connecting EVM and Cosmos ecosystems. Our approach makes three key contributions:
+
+First, a \textbf{three-layer indicator architecture} (Profile, Semantic Binding, Governance) that preserves the environmental meaning of tokens across heterogeneous chains, solving the semantic mixing problem inherent in naive ERC-20 bridging.
+
+Second, an \textbf{HTLC protocol with automatic callback} that provides strong atomicity guarantees: minting on Cosmos automatically triggers burning on EVM, eliminating the timeout race condition of standard HTLC designs.
+
+Third, a \textbf{comprehensive security audit} mitigating 10 vulnerabilities across both contract layers, including the critical unauthorized minting and double-spend vectors.
+
+Our experimental evaluation on production mainnets (Polygon and Neutron) demonstrates successful atomic transfers of CO$_2$\_REMOVAL indicator tokens with verified supply conservation and preserved semantic binding. The key insight is that cross-chain interoperability for semantically-typed environmental tokens requires not only transactional atomicity but also semantic consistency---a dimension largely absent from existing bridge solutions.
+
+\subsection*{Availability}
+
+All mainnet transactions can be verified:
+\begin{itemize}
+    \item \textbf{Axelar GMP}: \url{https://axelarscan.io/gmp/0xfb49a7ed3790332ac3f53fde8e3eed265f130ac91539e97c9e60456a9a3c9512}
+    \item \textbf{Polygon Lock}: \url{https://polygonscan.com/tx/0xfb49a7ed3790332ac3f53fde8e3eed265f130ac91539e97c9e60456a9a3c9512}
+    \item \textbf{Polygon Burn}: \url{https://polygonscan.com/tx/0x23a101b785203c4bd0fd0879f1a17512bdf9bde19065f3a277dd3606e9aeaaa1}
+    \item \textbf{Neutron Claim}: \url{https://www.mintscan.io/neutron/tx/70D848ED26A6360AC7EC95ED741FA195DC237AC5A5C6C046A9FFC00962CAD8C5}
+\end{itemize}
+
+\section*{Acknowledgments}
+
+This work was supported by ANII (Agencia Nacional de Investigaci\'on e Innovaci\'on, Uruguay) under grant code POS\_NAC\_2023\_4\_178540 and by Pyxis. We acknowledge the use of Claude (Anthropic) in agent mode as a coding assistant for implementation tasks (January--February 2026). All AI-generated code was reviewed, tested, and validated by the authors.
+
+%=============================================================================
+% References
+%=============================================================================
+\balance
+\bibliographystyle{IEEEtran}
+\begin{thebibliography}{15}
+
+\bibitem{defillama2024}
+DefiLlama, ``DeFi Dashboard,'' 2024. [Online]. Available: \url{https://defillama.com/}
+
+\bibitem{l2beat2024}
+L2Beat, ``Bridges Dashboard,'' 2024. [Online]. Available: \url{https://l2beat.com/bridges/}
+
+\bibitem{chainalysis2024}
+Chainalysis, ``The 2024 Crypto Crime Report,'' Chainalysis Inc., Tech. Rep., 2024.
+
+\bibitem{wang2021}
+G.~Wang, ``SoK: Exploring Blockchains Interoperability,'' Cryptology ePrint Archive, Paper 2021/537, 2021.
+
+\bibitem{ibc2024}
+Interchain Foundation, ``IBC: The Blockchain Interoperability Protocol,'' 2024. [Online]. Available: \url{https://ibcprotocol.dev/}
+
+\bibitem{axelar2024}
+Axelar Network, ``Axelar: Connecting Web3 -- Developer Documentation,'' 2024. [Online]. Available: \url{https://docs.axelar.dev/}
+
+\bibitem{gray1978}
+J.~Gray, ``Notes on Data Base Operating Systems,'' in \emph{Operating Systems: An Advanced Course}, R.~Bayer, R.~M. Graham, and G.~Seegm\"{u}ller, Eds. Berlin, Heidelberg: Springer, 1978, pp.~393--481.
+
+\bibitem{zamyatin2021}
+A.~Zamyatin \emph{et al.}, ``SoK: Communication Across Distributed Ledgers,'' in \emph{Proc. Financial Cryptography and Data Security (FC)}, 2021, pp.~3--36.
+
+\bibitem{robinson2022}
+P.~Robinson, ``A Survey of Crosschain Communications Protocols,'' \emph{Computer Networks}, vol.~200, 2021, Art. no. 108488.
+
+\bibitem{gravity2022}
+Gravity Bridge, ``Gravity Bridge: Trustless Ethereum to Cosmos Bridge,'' 2022. [Online]. Available: \url{https://www.gravitybridge.net/}
+
+\bibitem{axelar2024its}
+Axelar Network, ``Interchain Token Service Documentation,'' 2024. [Online]. Available: \url{https://docs.axelar.dev/dev/send-tokens/interchain-tokens/intro/}
+
+\bibitem{wormhole2024}
+Wormhole Foundation, ``Wormhole: A Generic Message Passing Protocol,'' 2024. [Online]. Available: \url{https://wormhole.com/}
+
+\bibitem{thyagarajan2022}
+S.~A.~K.~Thyagarajan, G.~Malavolta, and P.~Moreno-Sanchez, ``Universal Atomic Swaps: Secure Exchange of Coins Across All Blockchains,'' in \emph{Proc. 2022 IEEE S\&P}, 2022, pp.~1299--1316.
+
+\bibitem{herlihy2018}
+M.~Herlihy, ``Atomic Cross-Chain Swaps,'' in \emph{Proc. 2018 ACM PODC}, 2018, pp.~245--254.
+
+\bibitem{erc1155}
+W.~Radomski, A.~Cooke, P.~Castonguay, J.~Therien, E.~Binet, and R.~Sandford, ``EIP-1155: Multi Token Standard,'' Ethereum Improvement Proposals, 2018. [Online]. Available: \url{https://eips.ethereum.org/EIPS/eip-1155}
+
+\end{thebibliography}
+
+\end{document}

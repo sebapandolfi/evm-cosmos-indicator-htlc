@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build artifacts
+artifacts/
+cache/
+target/
+
+# CosmWasm build artifacts (keep .wasm in artifacts/ if needed)
+cosmwasm-contract/target/
+
+# Environment
+.env
+.env.local
+
+# State files (generated during testing)
+htlc-state*.json
+*-deployment*.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+*.log

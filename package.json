@@ -1,0 +1,29 @@
+{
+    "name": "evm-cosmos-indicator-htlc",
+    "version": "1.0.0",
+    "description": "Atomic cross-chain transfer of environmental indicator tokens via HTLC with automatic callback (Polygon <-> Neutron via Axelar GMP)",
+    "license": "MIT",
+    "scripts": {
+        "compile:evm": "npx hardhat compile",
+        "compile:cosmwasm": "cd cosmwasm-contract && docker run --rm -v \"$(pwd)\":/code --mount type=volume,source=\"$(basename \"$(pwd)\")_cache\",target=/target --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry cosmwasm/optimizer:0.15.0",
+        "deploy:evm": "node scripts/deploy-htlc-evm.js",
+        "deploy:cosmos": "node scripts/deploy-htlc-cosmos.js",
+        "test:lock": "node scripts/htlc-quick-test.js lock",
+        "test:claim-cosmos": "node scripts/htlc-quick-test.js claim-cosmos",
+        "test:claim-evm": "node scripts/htlc-quick-test.js claim-evm",
+        "test:status": "node scripts/htlc-quick-test.js status"
+    },
+    "dependencies": {
+        "@axelar-network/axelar-gmp-sdk-solidity": "^6.0.0",
+        "@cosmjs/cosmwasm-stargate": "^0.32.0",
+        "@cosmjs/proto-signing": "^0.32.0",
+        "@cosmjs/stargate": "^0.32.0",
+        "@openzeppelin/contracts": "^4.5.0",
+        "dotenv": "^16.0.2",
+        "ethers": "^5.6.2"
+    },
+    "devDependencies": {
+        "@nomiclabs/hardhat-ethers": "^2.2.3",
+        "hardhat": "^2.9.9"
+    }
+}
