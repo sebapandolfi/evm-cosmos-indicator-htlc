@@ -4,26 +4,25 @@ HTLC-based atomic cross-chain bridge for environmental indicator tokens between 
 
 ## Overview
 
-This proof-of-concept implements a three-layer architecture for cross-chain interoperability of environmental indicators (CO2 removals, energy consumption, etc.):
+This proof-of-concept implements an atomic cross-chain bridge for environmental indicators (CO2 removals, energy consumption, etc.) with:
 
-- **Profile Layer**: Cryptographic commitment to indicator metadata (`profileHash`, `dataHash`, deterministic `indicatorId`)
-- **Semantic Binding Layer**: ERC-1155/CW1155 multi-token with immutable token-to-indicator mapping preventing semantic mixing
-- **Governance Layer**: Owner-gated token class creation, bridge-only minting, authorized sender whitelist
-
-Atomicity is guaranteed by an **HTLC protocol with automatic GMP callback**: when tokens are minted on Cosmos (revealing the secret), the contract emits callback data that triggers burning of escrowed tokens on EVM.
+- **Semantic Binding**: ERC-1155/CW1155 multi-token with immutable token-to-indicator mapping, preventing semantic mixing of different indicator types
+- **Cryptographic Metadata Commitment**: Deterministic `indicatorId = keccak256(profileHash)` with on-chain `profileHash` and `dataHash` anchors
+- **Governance Controls**: Owner-gated token class creation, bridge-only minting, authorized sender whitelist
+- **HTLC with Automatic Callback**: When tokens are minted on Cosmos (revealing the secret), the contract emits callback data that triggers burning of escrowed tokens on EVM
 
 ## Architecture
 
 ```
 EVM (Polygon)                    Axelar GMP                   Cosmos (Neutron)
-┌─────────────────┐                                     ┌──────────────────────┐
-│IndicatorToken1155│           GMP1 (lock)               │ token_bridge_receiver│
-│  (ERC-1155)     │    ───────────────────────────►      │    (CosmWasm)        │
-│                 │                                      │                      │
-│ BridgeHTLC      │           GMP2 (callback burn)       │  Authorized senders  │
-│  (HTLC+Escrow)  │    ◄───────────────────────────      │  Token class registry│
-│  _execute()     │                                      │  Auto callback emit  │
-└─────────────────┘                                     └──────────────────────┘
++-----------------+                                     +----------------------+
+|IndicatorToken1155|           GMP1 (lock)               | token_bridge_receiver|
+|  (ERC-1155)     |    ------------------------------>   |    (CosmWasm)        |
+|                 |                                      |                      |
+| BridgeHTLC      |           GMP2 (callback burn)       |  Authorized senders  |
+|  (HTLC+Escrow)  |    <------------------------------  |  Token class registry|
+|  _execute()     |                                      |  Auto callback emit  |
++-----------------+                                     +----------------------+
 ```
 
 ## Deployed Contracts (Production Mainnet)
@@ -44,14 +43,9 @@ EVM (Polygon)                    Axelar GMP                   Cosmos (Neutron)
 ## Setup
 
 ```bash
-# Clone the repository
 git clone https://github.com/sebapandolfi/evm-cosmos-indicator-htlc.git
 cd evm-cosmos-indicator-htlc
-
-# Install dependencies
 npm install
-
-# Configure environment
 cp .env.example .env
 # Edit .env with your private keys
 ```
@@ -80,15 +74,11 @@ npm run compile:cosmwasm
 npm run deploy:evm
 ```
 
-This deploys `IndicatorToken1155` and `BridgeHTLC`, configures the bridge, creates a test token class (CO2_REMOVAL), and mints initial supply.
-
 ### Deploy CosmWasm Contract to Neutron
 
 ```bash
 npm run deploy:cosmos
 ```
-
-This uploads the WASM, instantiates the contract, adds the Axelar relay to the authorized senders list, and creates a matching token class.
 
 ## Testing the HTLC Flow
 
@@ -98,17 +88,11 @@ This uploads the WASM, instantiates the contract, adds the Axelar relay to the a
 npm run test:lock
 ```
 
-This generates a secret/hashlock, locks 10 tokens in the bridge escrow, and sends a GMP message to Neutron via Axelar. Output includes the Axelarscan URL to track the GMP relay.
-
-**Verify**: Check [Axelarscan](https://axelarscan.io) for the GMP message status.
-
 ### Step 2: Wait for GMP relay (~2-5 minutes)
 
 ```bash
 npm run test:status
 ```
-
-Check if the HTLC has been registered on Neutron.
 
 ### Step 3: Claim on Neutron (reveals secret, mints tokens)
 
@@ -116,35 +100,13 @@ Check if the HTLC has been registered on Neutron.
 npm run test:claim-cosmos
 ```
 
-The secret is revealed on-chain, tokens are minted to the recipient, and callback data is emitted for EVM burn.
-
-**Verify**:
-- HTLC state should be `claimed`
-- Recipient balance should show the minted tokens
-- `callback_status: READY` should appear in the output
-
 ### Step 4: Finalize burn on Polygon
 
 ```bash
 npm run test:claim-evm
 ```
 
-Uses the revealed secret to burn the escrowed tokens on Polygon.
-
-**Verify**:
-- Lock state should be `CLAIMED`
-- Bridge token balance should be 0 (burned)
-- Total supply conserved: EVM balance + Cosmos balance = original supply
-
 ## Verification
-
-### Check Polygon state
-
-```bash
-npm run test:status
-```
-
-### Verify on block explorers
 
 - **Axelarscan** (GMP messages): https://axelarscan.io/gmp/
 - **Polygonscan** (EVM transactions): https://polygonscan.com/
@@ -164,24 +126,24 @@ npm run test:status
 ```
 evm-cosmos-indicator-htlc/
 ├── evm-contracts/
-│   ├── IndicatorToken1155.sol     # ERC-1155 with semantic binding + governance
-│   └── BridgeHTLC.sol             # HTLC bridge with auto callback handler
+│   ├── IndicatorToken1155.sol     # ERC-1155 with semantic binding
+│   └── BridgeHTLC.sol             # HTLC bridge with auto callback
 ├── cosmwasm-contract/
 │   ├── Cargo.toml
 │   └── src/
 │       ├── contract.rs            # HTLC logic + callback emission
-│       ├── state.rs               # State with authorized senders + token classes
+│       ├── state.rs               # State with token classes
 │       ├── msg.rs                 # Execute/Query messages
 │       ├── error.rs               # Error types
 │       └── lib.rs                 # Module exports
 ├── scripts/
-│   ├── deploy-htlc-evm.js        # Deploy EVM contracts to Polygon
-│   ├── deploy-htlc-cosmos.js     # Deploy CosmWasm to Neutron
+│   ├── deploy-htlc-evm.js        # Deploy EVM contracts
+│   ├── deploy-htlc-cosmos.js     # Deploy CosmWasm contract
 │   ├── htlc-quick-test.js        # Test: lock / claim-cosmos / claim-evm / status
 │   └── gas-config.js             # Polygon gas configuration
 ├── paper/
 │   └── paper_token_bridge.tex    # Academic paper (LaTeX)
-├── CONTRACTS_DOCUMENTATION.md    # Detailed contract documentation
+├── CONTRACTS_DOCUMENTATION.md
 ├── hardhat.config.js
 ├── package.json
 └── .env.example
@@ -206,7 +168,7 @@ evm-cosmos-indicator-htlc/
 
 ## Academic Paper
 
-The accompanying academic paper is available in `paper/paper_token_bridge.tex`. It describes the three-layer architecture, HTLC protocol with automatic callback, security analysis, and mainnet evaluation results.
+The accompanying academic paper is available in `paper/paper_token_bridge.tex`.
 
 ## Acknowledgments
 
