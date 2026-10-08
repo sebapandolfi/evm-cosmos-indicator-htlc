@@ -89,7 +89,7 @@ These are the contracts the evaluation campaign ran against. Earlier generations
 - Minimum 1-hour timelock (`MIN_TIMELOCK_DURATION`)
 - `_execute` callback handler for automatic burn (non-reverting)
 - `onERC1155Received` and `onERC1155BatchReceived` implemented
-- Escrowed bounty with a protocol minimum (`minBounty`, owner-adjustable); paid to whoever finalises the burn via `claimBurn`, returned to the sender on the automatic and refund paths
+- Escrowed bounty with a protocol minimum (`minBounty`, owner-adjustable); paid to whoever finalises the burn via `claimBurn` from the destination claim deadline T_c on, and returned to the sender on the automatic and refund paths and on any `claimBurn` before T_c (v1.1 grace period)
 - Pull-payment fallback (`pendingWithdrawals`) when a bounty transfer fails
 - Reverse-direction prepare messages accepted only from the configured counterpart (`setAuthorizedSource`) and only for a registered class with the same `indicatorId`
 
@@ -105,7 +105,7 @@ EMPTY ──lockForBurn──► LOCKED ──claimBurn(S) or callback──► 
 | Function | Description |
 |----------|-------------|
 | `lockForBurn(tokenId, amount, hashlock, timelock, recipient, chain, addr, bounty)` | `payable`: escrow tokens and bounty, pay GMP gas, send GMP₁ to Cosmos |
-| `claimBurn(hashlock, secret)` | Fallback burn by anyone holding the public secret; pays the bounty to the caller |
+| `claimBurn(hashlock, secret)` | Fallback burn by anyone holding the public secret; pays the bounty to the caller from T_c on, to the sender before (v1.1) |
 | `refundBurn(hashlock)` | Refund tokens and bounty after timeout (sender only) |
 | `withdrawPending()` | Withdraw a bounty whose direct transfer failed |
 | `_execute(commandId, sourceChain, sourceAddress, payload)` | Relay entry point: burn callback (64-byte payload) or reverse-direction prepare (tagged payload) |
@@ -127,7 +127,8 @@ EMPTY ──lockForBurn──► LOCKED ──claimBurn(S) or callback──► 
 **Source:** `cosmwasm-contract/src/`
 
 **Security features:**
-- Authorized sender whitelist for `prepare_mint` (only Axelar relay can create HTLCs)
+- Authorized sender whitelist for `prepare_mint` (only the Axelar route can create HTLCs; the owner can no longer call it directly, v1.1)
+- Expected counterpart (`set_counterpart`, v1.1): `prepare_mint` is rejected unless `source_chain`/`source_address` match the configured BridgeHTLC. The forward prepare uses Axelar payload version 1, whose `source_chain`/`source_address` arguments Axelar validates; the call fails closed while no counterpart is set
 - Strict 32-byte hex validation for secrets and hashlocks
 - `prepare_mint` requires the class to be registered **and** its `indicator_id` to equal the message's (existence alone is not enough)
 - Owner-only access for admin operations and `receive_test`
@@ -145,6 +146,7 @@ EMPTY ──lockForBurn──► LOCKED ──claimBurn(S) or callback──► 
 | `claim_burn { hashlock, secret }` | Reverse direction: burn the escrow (relayed callback or manual fallback) |
 | `refund_burn { hashlock }` | Reverse direction: refund tokens and bounty after timeout |
 | `withdraw_funds { denom, amount, to }` | Recover refunds of failed IBC transfers held by the contract (owner only) |
+| `set_counterpart { chain, address }` | Expected source of `prepare_mint` (owner only, v1.1) |
 | `add_authorized_sender { sender }` | Whitelist GMP sender (owner only) |
 | `remove_authorized_sender { sender }` | Remove from whitelist (owner only) |
 | `create_token_class { ... }` | Create token class (owner only) |

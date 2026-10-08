@@ -15,6 +15,8 @@
  *  T7  invalid secret: claimBurn reverts; callback is ignored without state change
  *  T8  bounty = 0 preserves legacy behaviour
  *  T9  no double settlement: claim after claim/refund reverts
+ *  T10 (v1.1) claimBurn before T_c burns but returns the bounty to the sender
+ *  T11 (v1.1) prepare payload uses Axelar version 1 with source_chain/source_address
  */
 const hre = require('hardhat');
 const { ethers } = hre;
@@ -64,6 +66,12 @@ async function lock(bridge, user, hashlock, { bounty, value, tokenId = 1, amount
     );
 }
 
+async function pastTc() {
+    // lock() uses T_e = now + 7200 and the contract uses T_c = T_e - 30 min
+    await hre.network.provider.send('evm_increaseTime', [5401]);
+    await hre.network.provider.send('evm_mine');
+}
+
 async function main() {
     const [owner, user, monitor, rando] = await ethers.getSigners();
     const BOUNTY = ethers.utils.parseEther('0.2');
@@ -85,6 +93,7 @@ async function main() {
 
     // ---------------- T2: monitor gets the bounty ----------------
     console.log('T2: third-party claimBurn receives the bounty');
+    await pastTc(); // v1.1: the bounty pays a third party only from T_c on
     const balBefore = await monitor.getBalance();
     const rcpt = await (await bridge.connect(monitor).claimBurn(s1.hashlock, s1.secret)).wait();
     const gasCost = rcpt.gasUsed.mul(rcpt.effectiveGasPrice);
@@ -127,6 +136,7 @@ async function main() {
     const badMonitor = await MonitorF.deploy(); // acceptFunds defaults false
     let s5 = newSecret();
     await (await lock(bridge, user, s5.hashlock, { bounty: BOUNTY, value: VALUE })).wait();
+    await pastTc();
     await (await badMonitor.doClaim(bridge.address, s5.hashlock, s5.secret)).wait();
     assert((await bridge.pendingWithdrawals(badMonitor.address)).eq(BOUNTY), 'bounty credited to pendingWithdrawals');
     await (await badMonitor.setAccept(true)).wait();
@@ -151,6 +161,7 @@ async function main() {
     )).wait();
     assert(r7.events.some((e) => e.event === 'CallbackIgnored'), 'callback with wrong secret ignored');
     assert((await bridge.getLock(s7.hashlock)).state === 1, 'lock still LOCKED');
+    await pastTc();
     await (await bridge.connect(monitor).claimBurn(s7.hashlock, s7.secret)).wait(); // cleanup, monitor collects
 
     // ---------------- T8: protocol-minimum bounty ----------------
@@ -170,6 +181,33 @@ async function main() {
     console.log('T9: settled locks cannot be claimed or refunded again');
     await expectRevert(bridge.connect(monitor).claimBurn(s8.hashlock, s8.secret), 'double claim rejected');
     await expectRevert(bridge.connect(user).refundBurn(s8.hashlock), 'refund after claim rejected');
+
+    // ---------------- T10 (v1.1): no bounty for racing the callback ----------------
+    console.log('T10: claimBurn before T_c burns but returns the bounty to the sender');
+    let s10 = newSecret();
+    await (await lock(bridge, user, s10.hashlock, { bounty: BOUNTY, value: VALUE })).wait();
+    const ub10 = await user.getBalance();
+    const r10 = await (await bridge.connect(monitor).claimBurn(s10.hashlock, s10.secret)).wait();
+    assert((await bridge.getLock(s10.hashlock)).state === 2, 'early claimBurn still burns (CLAIMED)');
+    const ev10 = r10.events.find((e) => e.event === 'BountyPaid');
+    assert(ev10 && ev10.args.recipient === user.address, 'bounty returned to the sender, not the caller');
+    assert((await user.getBalance()).sub(ub10).eq(BOUNTY), 'sender balance increased by the bounty');
+
+    // ---------------- T11 (v1.1): Axelar payload version 1 ----------------
+    console.log('T11: prepare payload is Axelar version 1 with validated source arguments');
+    let s11 = newSecret();
+    const r11 = await (await lock(bridge, user, s11.hashlock, { bounty: BOUNTY, value: VALUE })).wait();
+    const iface = new ethers.utils.Interface(['event ContractCall(address indexed sender, string destinationChain, string destinationContractAddress, bytes32 indexed payloadHash, bytes payload)']);
+    let pl = null;
+    for (const lg of r11.logs) { try { const p = iface.parseLog(lg); if (p.name === 'ContractCall') pl = p.args.payload; } catch (e) {} }
+    assert(pl && pl.slice(0, 10) === '0x00000001', 'payload starts with version 0x00000001');
+    const [method, names, types, values] = ethers.utils.defaultAbiCoder.decode(['string', 'string[]', 'string[]', 'bytes'], '0x' + pl.slice(10));
+    assert(method === 'prepare_mint', 'method is prepare_mint');
+    assert(names.join(',') === 'hashlock,indicator_id,token_id,amount,cosmos_recipient,timeout,source_chain,source_address', 'argument names in order');
+    assert(types.every((t) => t === 'string'), 'all arguments typed as string');
+    const vals = ethers.utils.defaultAbiCoder.decode(Array(8).fill('string'), values);
+    assert(vals[0] === s11.hashlock.toLowerCase(), 'hashlock hex carried');
+    assert(vals[6] === 'Polygon' && vals[7].toLowerCase() === bridge.address.toLowerCase(), 'source_chain/source_address carried');
 
     console.log(`\n${passed} passed, ${failed} failed`);
     if (failed > 0) process.exit(1);

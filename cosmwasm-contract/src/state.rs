@@ -39,6 +39,17 @@ pub const CONFIG: Item<Config> = Item::new("config");
 /// FIX #1: Only these addresses can create HTLC locks
 pub const AUTHORIZED_SENDERS: Item<Vec<String>> = Item::new("authorized_senders");
 
+/// v1.1: expected source of prepare_mint messages (Axelar chain name and the
+/// address of the BridgeHTLC contract on that chain). prepare_mint fails closed
+/// while it is unset.
+#[cw_serde]
+pub struct Counterpart {
+    pub chain: String,
+    pub address: String,
+}
+
+pub const COUNTERPART: Item<Counterpart> = Item::new("counterpart");
+
 // ============ Token Balances (CW1155-style) ============
 
 /// Balance of tokens per user per token class

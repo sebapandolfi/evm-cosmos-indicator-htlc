@@ -119,6 +119,13 @@ pub enum ExecuteMsg {
     
     // ============ Admin ============
     
+    /// v1.1: set the expected source of prepare_mint messages (owner-only)
+    #[serde(rename = "set_counterpart")]
+    SetCounterpart {
+        chain: String,
+        address: String,
+    },
+
     /// Add an authorized GMP sender address (owner-only)
     #[serde(rename = "add_authorized_sender")]
     AddAuthorizedSender {

@@ -127,6 +127,10 @@ pub fn execute(
         },
         
         // Admin: Add authorized GMP sender
+        ExecuteMsg::SetCounterpart { chain, address } => {
+            execute_set_counterpart(deps, info, chain, address)
+        },
+
         ExecuteMsg::AddAuthorizedSender { sender } => {
             execute_add_authorized_sender(deps, info, sender)
         },
@@ -229,17 +233,30 @@ fn execute_prepare_mint(
     source_chain: String,
     source_address: String,
 ) -> Result<Response, ContractError> {
-    // FIX #1: Verify sender is authorized (Axelar IBC relay or owner)
+    // FIX #1: Verify the message arrives through the Axelar route.
+    // v1.1: the owner can no longer submit prepare_mint directly.
     let config = CONFIG.load(deps.storage)?;
     let authorized_senders = AUTHORIZED_SENDERS.load(deps.storage)?;
     let sender = info.sender.to_string();
-    
-    let is_authorized = sender == config.owner
-        || config.axelar_gateway.as_ref().map_or(false, |gw| *gw == sender)
+
+    let is_authorized = config.axelar_gateway.as_ref().map_or(false, |gw| *gw == sender)
         || authorized_senders.contains(&sender);
-    
+
     if !is_authorized {
         return Err(ContractError::UnauthorizedSender { sender });
+    }
+
+    // v1.1: the route is shared by all GMP traffic on the channel, so the
+    // emitting contract must be checked too. source_chain/source_address are
+    // the arguments Axelar validates for version-1 (ABI) payloads; they must
+    // match the configured BridgeHTLC counterpart.
+    let counterpart = COUNTERPART
+        .may_load(deps.storage)?
+        .ok_or(ContractError::CounterpartNotConfigured {})?;
+    if !counterpart.chain.eq_ignore_ascii_case(&source_chain)
+        || !counterpart.address.eq_ignore_ascii_case(&source_address)
+    {
+        return Err(ContractError::UnexpectedSource { chain: source_chain, address: source_address });
     }
     
     // Parse amount
@@ -1422,4 +1439,26 @@ fn query_token_info(deps: Deps) -> StdResult<TokenInfoResponse> {
         decimals: config.decimals,
         total_supply,
     })
+}
+
+
+/// v1.1: set the expected source of prepare_mint messages (owner-only).
+pub fn execute_set_counterpart(
+    deps: DepsMut,
+    info: MessageInfo,
+    chain: String,
+    address: String,
+) -> Result<Response, ContractError> {
+    let config = CONFIG.load(deps.storage)?;
+    if info.sender.to_string() != config.owner {
+        return Err(ContractError::Unauthorized {});
+    }
+    if chain.is_empty() || address.is_empty() {
+        return Err(ContractError::InvalidPayload {});
+    }
+    COUNTERPART.save(deps.storage, &Counterpart { chain: chain.clone(), address: address.clone() })?;
+    Ok(Response::new()
+        .add_attribute("action", "set_counterpart")
+        .add_attribute("chain", chain)
+        .add_attribute("address", address))
 }

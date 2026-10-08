@@ -358,7 +358,14 @@ contract BridgeHTLC is AxelarExecutable, ReentrancyGuard {
         // Pay the bounty to whoever finalised the burn (the monitor).
         // This makes A4 incentive-compatible: the motivated set is any
         // rational observer of the destination chain, not just altruists.
-        _payBounty(hashlock, msg.sender);
+        // v1.1: grace period. Before the destination claim deadline T_c the
+        // automatic callback may still be in flight, so a third party that
+        // races it is not paid: the burn goes through and the bounty returns
+        // to the sender. From T_c on, the bounty pays the caller as before.
+        address payee = block.timestamp >= lock.timelock - COSMOS_TIMEOUT_BUFFER
+            ? msg.sender
+            : lock.sender;
+        _payBounty(hashlock, payee);
 
         emit LockClaimed(hashlock, secret, msg.sender);
     }
@@ -433,21 +440,29 @@ contract BridgeHTLC is AxelarExecutable, ReentrancyGuard {
         string memory hashlockHex = _bytes32ToHexString(hashlock);
         string memory indicatorIdHex = _bytes32ToHexString(indicatorId);
         
-        string memory jsonPayload = string(abi.encodePacked(
-            '{"prepare_mint":{',
-            '"hashlock":"', hashlockHex, '",',
-            '"indicator_id":"', indicatorIdHex, '",',
-            '"token_id":"', _uint256ToString(tokenId), '",',
-            '"amount":"', _uint256ToString(amount), '",',
-            '"cosmos_recipient":"', cosmosRecipient, '",',
-            '"timeout":"', _uint256ToString(cosmosTimeout), '",',
-            '"source_chain":"', chainName, '",',
-            '"source_address":"', address(this).toString(), '"',
-            '}}'
-        ));
-        
-        // Axelar GMP Version 0x00000002 (JSON direct)
-        return abi.encodePacked(bytes4(0x00000002), bytes(jsonPayload));
+        // v1.1: Axelar GMP payload version 0x00000001 (ABI-encoded CosmWasm
+        // call). With this version Axelar converts the call to the JSON
+        // message {"prepare_mint": {...}} and validates the source_chain and
+        // source_address arguments, so the receiver can authenticate the
+        // emitting contract instead of only the IBC route. The JSON shape the
+        // receiver sees is the same as with the 0x00000002 encoding of v1.0.
+        string[] memory names = new string[](8);
+        names[0] = "hashlock"; names[1] = "indicator_id"; names[2] = "token_id";
+        names[3] = "amount"; names[4] = "cosmos_recipient"; names[5] = "timeout";
+        names[6] = "source_chain"; names[7] = "source_address";
+        string[] memory types = new string[](8);
+        for (uint256 i = 0; i < 8; i++) { types[i] = "string"; }
+        bytes memory argValues = abi.encode(
+            hashlockHex,
+            indicatorIdHex,
+            _uint256ToString(tokenId),
+            _uint256ToString(amount),
+            cosmosRecipient,
+            _uint256ToString(cosmosTimeout),
+            chainName,
+            address(this).toString()
+        );
+        return abi.encodePacked(bytes4(0x00000001), abi.encode("prepare_mint", names, types, argValues));
     }
 
     /**

@@ -47,6 +47,12 @@ pub enum ContractError {
     #[error("Unauthorized sender for GMP: {sender}")]
     UnauthorizedSender { sender: String },
 
+    #[error("Counterpart not configured")]
+    CounterpartNotConfigured {},
+
+    #[error("Unexpected message source: {chain}/{address}")]
+    UnexpectedSource { chain: String, address: String },
+
     // ============ Token Class Errors ============
 
     #[error("Token class not found: {token_id}")]
