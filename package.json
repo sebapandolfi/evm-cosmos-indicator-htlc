@@ -11,7 +11,10 @@
         "test:lock": "node scripts/htlc-quick-test.js lock",
         "test:claim-cosmos": "node scripts/htlc-quick-test.js claim-cosmos",
         "test:claim-evm": "node scripts/htlc-quick-test.js claim-evm",
-        "test:status": "node scripts/htlc-quick-test.js status"
+        "test:status": "node scripts/htlc-quick-test.js status",
+        "eval:batch": "node scripts/htlc-evaluation.js run-batch",
+        "eval:analyze": "node scripts/htlc-evaluation.js analyze",
+        "eval:refund": "node scripts/htlc-evaluation.js refund-test"
     },
     "dependencies": {
         "@axelar-network/axelar-gmp-sdk-solidity": "^6.0.0",
