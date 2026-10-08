@@ -9,6 +9,7 @@ import { IERC1155 } from '@openzeppelin/contracts/token/ERC1155/IERC1155.sol';
 interface IIndicatorToken1155 {
     function safeTransferFrom(address from, address to, uint256 id, uint256 amount, bytes calldata data) external;
     function burnFromBridge(uint256 tokenId, uint256 amount) external;
+    function mint(address to, uint256 tokenId, uint256 amount) external;
     function balanceOf(address account, uint256 id) external view returns (uint256);
     function getIndicatorId(uint256 tokenId) external view returns (bytes32);
 }
@@ -74,6 +75,7 @@ contract BridgeHTLC is AxelarExecutable, ReentrancyGuard {
         string destinationChain;
         string destinationAddress;
         LockState state;
+        uint256 bounty;          // Native-token bounty escrowed for whoever finalises the burn
     }
 
     // Locks indexed by hashlock
@@ -84,6 +86,56 @@ contract BridgeHTLC is AxelarExecutable, ReentrancyGuard {
     
     // Revealed secrets (for verification)
     mapping(bytes32 => bytes32) public revealedSecrets; // hashlock => secret
+
+    // Pull-payment fallback for bounty transfers that fail (e.g., recipient reverts)
+    mapping(address => uint256) public pendingWithdrawals;
+
+    // ============ Reverse direction (Cosmos -> EVM): pending mints ============
+
+    enum MintState { EMPTY, PENDING, MINTED, REFUNDED }
+
+    struct PendingMint {
+        uint256 tokenId;
+        uint256 amount;
+        address recipient;
+        bytes32 indicatorId;     // semantic binding, validated against the token contract
+        uint256 timeout;         // claim deadline T_c on this chain (unix seconds)
+        string sourceChain;      // for the automatic burn callback
+        string sourceAddress;
+        MintState state;
+    }
+
+    /// @dev Pending mints (this chain acting as HTLC destination), indexed by hashlock
+    mapping(bytes32 => PendingMint) public pendingMints;
+
+    /// @dev Contract owner (may configure the authorized inbound source)
+    address public owner;
+
+    /// @dev Only prepare-mint messages from this counterpart are accepted
+    string public authorizedSourceChain;
+    string public authorizedSourceAddress;
+
+    /// @dev Protocol-minimum bounty. Without a floor, an adversarial sender
+    ///      sets bounty = 0 and deliberately induces callback failure
+    ///      (e.g., by mis-funding the callback relay fee), then refunds after
+    ///      T_e while keeping the destination mint. A minimum bounty sized
+    ///      above the monitor's claimBurn execution cost makes that attack
+    ///      fund its own defeat: the secret is public after the destination
+    ///      claim and claimBurn is permissionless, so any rational observer
+    ///      profits from finalising the burn. Owner-adjustable as gas prices
+    ///      drift.
+    uint256 public minBounty;
+
+    event MinBountySet(uint256 minBounty);
+
+    /// @dev Tag for inbound tagged messages (first ABI word). 64-byte untagged
+    ///      payloads are treated as legacy burn callbacks.
+    uint256 public constant MSG_PREPARE_MINT = 2;
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner");
+        _;
+    }
 
     // Stats
     uint256 public totalLocked;
@@ -96,7 +148,15 @@ contract BridgeHTLC is AxelarExecutable, ReentrancyGuard {
         uint256 tokenId,
         uint256 amount,
         uint256 timelock,
-        string cosmosRecipient
+        string cosmosRecipient,
+        uint256 bounty
+    );
+
+    event BountyPaid(
+        bytes32 indexed hashlock,
+        address indexed recipient,
+        uint256 amount,
+        bool credited // true if credited to pendingWithdrawals instead of sent
     );
 
     event LockClaimed(
@@ -123,6 +183,25 @@ contract BridgeHTLC is AxelarExecutable, ReentrancyGuard {
         string reason
     );
 
+    // Reverse-direction events (this chain as HTLC destination)
+    event MintPrepared(
+        bytes32 indexed hashlock,
+        uint256 tokenId,
+        uint256 amount,
+        address indexed recipient,
+        uint256 timeout
+    );
+
+    event MintClaimed(
+        bytes32 indexed hashlock,
+        bytes32 secret,
+        address indexed recipient
+    );
+
+    event MintRefunded(bytes32 indexed hashlock);
+
+    event AuthorizedSourceSet(string sourceChain, string sourceAddress);
+
     constructor(
         address gateway_,
         address gasService_,
@@ -132,6 +211,31 @@ contract BridgeHTLC is AxelarExecutable, ReentrancyGuard {
         gasService = IAxelarGasService(gasService_);
         token = IIndicatorToken1155(token_);
         chainName = chainName_;
+        owner = msg.sender;
+        // Default floor: ~3x the claimBurn gas cost at elevated gas prices;
+        // adjust via setMinBounty as market conditions change.
+        minBounty = 0.05 ether;
+    }
+
+    /**
+     * @notice Adjust the protocol-minimum bounty (owner-only).
+     */
+    function setMinBounty(uint256 minBounty_) external onlyOwner {
+        minBounty = minBounty_;
+        emit MinBountySet(minBounty_);
+    }
+
+    /**
+     * @notice Configure the counterpart contract allowed to prepare mints
+     *         (reverse direction, Cosmos -> EVM).
+     */
+    function setAuthorizedSource(
+        string calldata sourceChain,
+        string calldata sourceAddress
+    ) external onlyOwner {
+        authorizedSourceChain = sourceChain;
+        authorizedSourceAddress = sourceAddress;
+        emit AuthorizedSourceSet(sourceChain, sourceAddress);
     }
 
     /**
@@ -143,6 +247,10 @@ contract BridgeHTLC is AxelarExecutable, ReentrancyGuard {
      * @param cosmosRecipient Cosmos address (bech32) to receive minted tokens
      * @param destinationChain Axelar chain name (e.g., "neutron")
      * @param destinationAddress CosmWasm contract address
+     * @param bounty Portion of msg.value escrowed as a bounty, payable to
+     *        whoever finalises the source-side burn via claimBurn(). Returned
+     *        to the sender if the automatic callback executes the burn, or on
+     *        refund. Makes supply conservation incentive-compatible (A4).
      */
     function lockForBurn(
         uint256 tokenId,
@@ -151,7 +259,8 @@ contract BridgeHTLC is AxelarExecutable, ReentrancyGuard {
         uint256 timelock,
         string calldata cosmosRecipient,
         string calldata destinationChain,
-        string calldata destinationAddress
+        string calldata destinationAddress,
+        uint256 bounty
     ) external payable nonReentrant {
         // --- Checks ---
         require(amount > 0, "Amount must be > 0");
@@ -160,7 +269,8 @@ contract BridgeHTLC is AxelarExecutable, ReentrancyGuard {
         require(timelock >= block.timestamp + MIN_TIMELOCK_DURATION, "Timelock too short (min 1 hour)");
         require(timelock <= block.timestamp + 7 days, "Timelock too far in future");
         require(locks[hashlock].state == LockState.EMPTY, "Hashlock already used");
-        require(msg.value > 0, "Gas payment required for GMP");
+        require(bounty >= minBounty, "Bounty below protocol minimum");
+        require(msg.value > bounty, "msg.value must cover bounty plus GMP gas");
         // FIX #3: Validate cosmosRecipient format (bech32-safe chars only)
         require(_isValidBech32Recipient(cosmosRecipient), "Invalid recipient format");
         require(bytes(destinationChain).length > 0, "Invalid destination chain");
@@ -179,7 +289,8 @@ contract BridgeHTLC is AxelarExecutable, ReentrancyGuard {
             cosmosRecipient: cosmosRecipient,
             destinationChain: destinationChain,
             destinationAddress: destinationAddress,
-            state: LockState.LOCKED
+            state: LockState.LOCKED,
+            bounty: bounty
         });
 
         userLocks[msg.sender].push(hashlock);
@@ -202,8 +313,8 @@ contract BridgeHTLC is AxelarExecutable, ReentrancyGuard {
             cosmosTimeout
         );
 
-        // Pay gas and send via Axelar
-        gasService.payNativeGasForContractCall{value: msg.value}(
+        // Pay gas and send via Axelar (bounty stays escrowed in this contract)
+        gasService.payNativeGasForContractCall{value: msg.value - bounty}(
             address(this),
             destinationChain,
             destinationAddress,
@@ -219,7 +330,8 @@ contract BridgeHTLC is AxelarExecutable, ReentrancyGuard {
             tokenId,
             amount,
             timelock,
-            cosmosRecipient
+            cosmosRecipient,
+            bounty
         );
     }
 
@@ -243,6 +355,11 @@ contract BridgeHTLC is AxelarExecutable, ReentrancyGuard {
         // Burn the escrowed tokens (they were successfully minted on Cosmos)
         token.burnFromBridge(lock.tokenId, lock.amount);
 
+        // Pay the bounty to whoever finalised the burn (the monitor).
+        // This makes A4 incentive-compatible: the motivated set is any
+        // rational observer of the destination chain, not just altruists.
+        _payBounty(hashlock, msg.sender);
+
         emit LockClaimed(hashlock, secret, msg.sender);
     }
 
@@ -265,7 +382,40 @@ contract BridgeHTLC is AxelarExecutable, ReentrancyGuard {
         // Return tokens to sender
         token.safeTransferFrom(address(this), lock.sender, lock.tokenId, lock.amount, "");
 
+        // Return the unspent bounty to the sender
+        _payBounty(hashlock, lock.sender);
+
         emit LockRefunded(hashlock, lock.sender, lock.tokenId, lock.amount);
+    }
+
+    /**
+     * @notice Pay out (or return) the escrowed bounty for a lock.
+     * @dev Zeroes the stored bounty before transferring (checks-effects-
+     *      interactions). If the native transfer fails (e.g., recipient is a
+     *      contract that reverts), the amount is credited to
+     *      pendingWithdrawals so the burn/refund can never be blocked.
+     */
+    function _payBounty(bytes32 hashlock, address recipient) internal {
+        uint256 amount = locks[hashlock].bounty;
+        if (amount == 0) return;
+        locks[hashlock].bounty = 0;
+
+        (bool ok, ) = payable(recipient).call{value: amount, gas: 30000}("");
+        if (!ok) {
+            pendingWithdrawals[recipient] += amount;
+        }
+        emit BountyPaid(hashlock, recipient, amount, !ok);
+    }
+
+    /**
+     * @notice Withdraw bounty amounts that could not be transferred directly.
+     */
+    function withdrawPending() external nonReentrant {
+        uint256 amount = pendingWithdrawals[msg.sender];
+        require(amount > 0, "Nothing to withdraw");
+        pendingWithdrawals[msg.sender] = 0;
+        (bool ok, ) = payable(msg.sender).call{value: amount}("");
+        require(ok, "Withdraw failed");
     }
 
     /**
@@ -353,12 +503,24 @@ contract BridgeHTLC is AxelarExecutable, ReentrancyGuard {
         string calldata sourceAddress,
         bytes calldata payload
     ) internal override {
-        // Decode payload: (hashlock, secret)
         if (payload.length < 64) {
             emit CallbackIgnored(bytes32(0), "Invalid payload length");
             return;
         }
 
+        // Tagged messages (reverse direction). 64-byte payloads are legacy
+        // burn callbacks; anything longer carries a type tag in word 0.
+        if (payload.length > 64) {
+            uint256 msgType = abi.decode(payload[:32], (uint256));
+            if (msgType == MSG_PREPARE_MINT) {
+                _handlePrepareMint(sourceChain, sourceAddress, payload);
+            } else {
+                emit CallbackIgnored(bytes32(0), "Unknown message type");
+            }
+            return;
+        }
+
+        // Legacy path: burn callback, ABI-encoded (hashlock, secret)
         (bytes32 hashlock, bytes32 secret) = abi.decode(payload, (bytes32, bytes32));
 
         HTLCLock storage lock = locks[hashlock];
@@ -382,8 +544,156 @@ contract BridgeHTLC is AxelarExecutable, ReentrancyGuard {
 
         token.burnFromBridge(lock.tokenId, lock.amount);
 
+        // Automatic callback executed the burn: no monitor was needed, so the
+        // bounty is returned to the original sender.
+        _payBounty(hashlock, lock.sender);
+
         emit CallbackBurnProcessed(hashlock, secret, sourceChain);
         emit LockClaimed(hashlock, secret, address(this));
+    }
+
+    // ============ Reverse direction: Cosmos -> EVM transfer ============
+
+    /**
+     * @notice Handle an inbound prepare-mint message (this chain is the HTLC
+     *         destination). Payload: abi.encode(uint256 MSG_PREPARE_MINT,
+     *         bytes32 hashlock, bytes32 indicatorId, uint256 tokenId,
+     *         uint256 amount, address recipient, uint256 timeout).
+     * @dev Mirrors the CosmWasm prepare_mint checks: authorized counterpart,
+     *      registered class with matching semantic identity, future timeout,
+     *      fresh hashlock. Invalid messages are ignored without state change
+     *      (the source escrow is then recoverable by refund after T_e).
+     */
+    function _handlePrepareMint(
+        string calldata sourceChain,
+        string calldata sourceAddress,
+        bytes calldata payload
+    ) internal {
+        if (payload.length != 224) {
+            emit CallbackIgnored(bytes32(0), "Invalid prepare payload length");
+            return;
+        }
+
+        // Authorization: only the configured counterpart may prepare mints
+        if (keccak256(bytes(sourceChain)) != keccak256(bytes(authorizedSourceChain)) ||
+            keccak256(bytes(sourceAddress)) != keccak256(bytes(authorizedSourceAddress))) {
+            emit CallbackIgnored(bytes32(0), "Unauthorized prepare source");
+            return;
+        }
+
+        (
+            ,
+            bytes32 hashlock,
+            bytes32 indicatorId,
+            uint256 tokenId,
+            uint256 amount,
+            address recipient,
+            uint256 timeout
+        ) = abi.decode(payload, (uint256, bytes32, bytes32, uint256, uint256, address, uint256));
+
+        if (pendingMints[hashlock].state != MintState.EMPTY || locks[hashlock].state != LockState.EMPTY) {
+            emit CallbackIgnored(hashlock, "Hashlock already used");
+            return;
+        }
+        if (amount == 0 || recipient == address(0) || timeout <= block.timestamp) {
+            emit CallbackIgnored(hashlock, "Invalid prepare parameters");
+            return;
+        }
+
+        // Semantic validation: class must be registered on this chain with the
+        // same content-addressed identity (prevents semantic mixing).
+        bytes32 localIndicatorId = token.getIndicatorId(tokenId);
+        if (localIndicatorId == bytes32(0) || localIndicatorId != indicatorId) {
+            emit CallbackIgnored(hashlock, "Unregistered or mismatched class");
+            return;
+        }
+
+        pendingMints[hashlock] = PendingMint({
+            tokenId: tokenId,
+            amount: amount,
+            recipient: recipient,
+            indicatorId: indicatorId,
+            timeout: timeout,
+            sourceChain: sourceChain,
+            sourceAddress: sourceAddress,
+            state: MintState.PENDING
+        });
+
+        emit MintPrepared(hashlock, tokenId, amount, recipient, timeout);
+    }
+
+    /**
+     * @notice Claim a pending mint by revealing the secret (reverse direction).
+     * @dev Mints to the recorded recipient and emits the automatic burn
+     *      callback to the Cosmos source via Axelar GMP. msg.value funds the
+     *      callback relay leg (destination execution gas on the source chain).
+     */
+    function claimMint(bytes32 hashlock, bytes32 secret) external payable nonReentrant {
+        PendingMint storage pm = pendingMints[hashlock];
+
+        require(pm.state == MintState.PENDING, "No pending mint");
+        require(block.timestamp < pm.timeout, "Claim window expired");
+        require(keccak256(abi.encodePacked(secret)) == hashlock, "Invalid secret");
+
+        pm.state = MintState.MINTED;
+        revealedSecrets[hashlock] = secret;
+
+        token.mint(pm.recipient, pm.tokenId, pm.amount);
+
+        // Automatic burn callback to the Cosmos source (JSON for CosmWasm)
+        bytes memory payload = abi.encodePacked(
+            bytes4(0x00000002),
+            bytes(_encodeClaimBurnJson(hashlock, secret))
+        );
+        if (msg.value > 0) {
+            gasService.payNativeGasForContractCall{value: msg.value}(
+                address(this), pm.sourceChain, pm.sourceAddress, payload, msg.sender
+            );
+        }
+        gateway().callContract(pm.sourceChain, pm.sourceAddress, payload);
+
+        emit MintClaimed(hashlock, secret, pm.recipient);
+    }
+
+    /**
+     * @notice Cancel a pending mint after its claim window expires.
+     * @dev Permissionless, mirroring the CosmWasm refund_mint: nothing was
+     *      minted, so this only frees the hashlock state on this chain.
+     */
+    function refundMint(bytes32 hashlock) external nonReentrant {
+        PendingMint storage pm = pendingMints[hashlock];
+
+        require(pm.state == MintState.PENDING, "No pending mint");
+        require(block.timestamp >= pm.timeout, "Claim window still open");
+
+        pm.state = MintState.REFUNDED;
+
+        emit MintRefunded(hashlock);
+    }
+
+    /**
+     * @notice Encode the claim_burn execute message consumed by the CosmWasm
+     *         source contract on the reverse path.
+     */
+    function _encodeClaimBurnJson(bytes32 hashlock, bytes32 secret) internal pure returns (string memory) {
+        return string(abi.encodePacked(
+            '{"claim_burn":{',
+            '"hashlock":"', _bytes32ToHexString(hashlock), '",',
+            '"secret":"', _bytes32ToHexString(secret), '"',
+            '}}'
+        ));
+    }
+
+    function getPendingMint(bytes32 hashlock) external view returns (
+        uint256 tokenId,
+        uint256 amount,
+        address recipient,
+        bytes32 indicatorId,
+        uint256 timeout,
+        MintState state
+    ) {
+        PendingMint storage pm = pendingMints[hashlock];
+        return (pm.tokenId, pm.amount, pm.recipient, pm.indicatorId, pm.timeout, pm.state);
     }
 
     /**
@@ -439,7 +749,8 @@ contract BridgeHTLC is AxelarExecutable, ReentrancyGuard {
         uint256 amount,
         uint256 timelock,
         string memory cosmosRecipient,
-        LockState state
+        LockState state,
+        uint256 bounty
     ) {
         HTLCLock storage lock = locks[hashlock];
         return (
@@ -448,7 +759,8 @@ contract BridgeHTLC is AxelarExecutable, ReentrancyGuard {
             lock.amount,
             lock.timelock,
             lock.cosmosRecipient,
-            lock.state
+            lock.state,
+            lock.bounty
         );
     }
 
