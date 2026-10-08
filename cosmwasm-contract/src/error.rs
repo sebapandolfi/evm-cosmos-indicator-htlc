@@ -57,4 +57,39 @@ pub enum ContractError {
 
     #[error("Indicator already bound to token: {indicator_id}")]
     IndicatorAlreadyBound { indicator_id: String },
+
+    // ============ Reverse Direction Errors ============
+
+    #[error("Outbound lock not found: {hashlock}")]
+    OutboundLockNotFound { hashlock: String },
+
+    #[error("Outbound lock already exists: {hashlock}")]
+    OutboundLockAlreadyExists { hashlock: String },
+
+    #[error("Invalid outbound lock state for {hashlock}: expected {expected}, got {actual}")]
+    InvalidOutboundState { hashlock: String, expected: String, actual: String },
+
+    #[error("Invalid EVM recipient address: {address}")]
+    InvalidEvmAddress { address: String },
+
+    #[error("Bounty exceeds attached funds or denom not attached")]
+    InvalidBounty {},
+
+    #[error("Axelar GMP account not configured; cannot emit outbound message")]
+    GmpAccountNotConfigured {},
+
+    #[error("Token id is not numeric (required for EVM payload): {token_id}")]
+    NonNumericTokenId { token_id: String },
+
+    #[error("Indicator identity mismatch for token {token_id}: registered {registered}, message {message}")]
+    IndicatorMismatch { token_id: String, registered: String, message: String },
+
+    #[error("Insufficient relay funds: need more than {minimum}, got {provided} (must cover IBC ack+timeout fees plus relay fee)")]
+    InsufficientRelayFunds { minimum: String, provided: String },
+
+    #[error("No Axelar-registered relay token attached (attach e.g. AXL as a second coin; NTRN is not an Axelar asset)")]
+    MissingRelayToken {},
+
+    #[error("Bounty below protocol minimum: need at least {minimum}, got {provided}")]
+    BountyBelowMinimum { minimum: String, provided: String },
 }

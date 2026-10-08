@@ -13,6 +13,15 @@ pub struct InstantiateMsg {
     pub decimals: u8,
     /// Axelar Gateway IBC address (optional)
     pub axelar_gateway: Option<String>,
+    /// Axelar GMP account (receiver of IBC transfers carrying GMP memos);
+    /// required for on-chain outbound GMP (automatic callback, reverse direction)
+    pub axelar_gmp_account: Option<String>,
+    /// Axelar relayer fee recipient (mainnet:
+    /// axelar1aythygn6z5thymj6tmzfwekzh05ewg3l7d6y89); required for automatic
+    /// execution of Cosmos->EVM messages on the destination chain
+    pub axelar_fee_recipient: Option<String>,
+    /// Protocol-minimum bounty in untrn (default 50000 = 0.05 NTRN)
+    pub min_bounty: Option<Uint128>,
 }
 
 #[cw_serde]
@@ -48,6 +57,42 @@ pub enum ExecuteMsg {
         hashlock: String,
     },
     
+    // ============ Reverse Direction (this chain as HTLC source) ============
+
+    /// Lock tokens on this chain for transfer to an EVM chain.
+    /// Escrows `amount` of `token_id` plus an optional native-coin bounty;
+    /// emits the ABI-encoded prepare message to the EVM bridge via Axelar GMP.
+    /// Attached funds = IBC/relay fee + bounty (bounty listed explicitly).
+    #[serde(rename = "lock_for_burn")]
+    LockForBurn {
+        token_id: String,
+        amount: Uint128,
+        hashlock: String,            // 0x + 64 hex chars, keccak256(secret)
+        timelock: u64,               // T_e unix seconds on this chain
+        evm_recipient: String,       // 0x-prefixed EVM address
+        destination_chain: String,   // Axelar chain name (e.g., "Polygon")
+        destination_address: String, // EVM BridgeHTLC address
+        /// Portion of the attached native funds escrowed as bounty for the
+        /// fallback claim_burn path (denom must match an attached coin)
+        bounty: Option<cosmwasm_std::Coin>,
+    },
+
+    /// Burn escrowed tokens after a confirmed destination claim.
+    /// Invoked automatically by the relayed EVM callback, or manually by any
+    /// party knowing the secret (fallback). Pays the escrowed bounty to the
+    /// caller on the manual path; returns it to the sender on the relayed path.
+    #[serde(rename = "claim_burn")]
+    ClaimBurn {
+        hashlock: String,
+        secret: String,
+    },
+
+    /// Refund escrowed tokens (and bounty) to the sender after timeout.
+    #[serde(rename = "refund_burn")]
+    RefundBurn {
+        hashlock: String,
+    },
+
     // ============ Token Class Management ============
     
     /// Create a new token class (semantic binding)
@@ -84,6 +129,16 @@ pub enum ExecuteMsg {
     #[serde(rename = "remove_authorized_sender")]
     RemoveAuthorizedSender {
         sender: String,
+    },
+
+    /// Withdraw native coins held by the contract (owner-only). Recovers
+    /// refunds from failed/timed-out IBC transfers (feerefunder timeout
+    /// refunds, error-ack transfer refunds), which are otherwise orphaned.
+    #[serde(rename = "withdraw_funds")]
+    WithdrawFunds {
+        denom: String,
+        amount: Uint128,
+        to: Option<String>,
     },
     
     // ============ Testing ============
@@ -144,6 +199,36 @@ pub enum QueryMsg {
     /// Query token info
     #[returns(TokenInfoResponse)]
     TokenInfo {},
+
+    /// Query an outbound (reverse-direction) lock by hashlock
+    #[returns(OutboundLockResponse)]
+    OutboundLock {
+        hashlock: String,
+    },
+}
+
+// ============ Axelar GMP Memo Types ============
+// Mirrors the schema in axelarnetwork/evm-cosmos-gmp-sample (send-receive):
+// the memo of the IBC transfer to the Axelar GMP account. `payload` must
+// serialize as a JSON byte array (Vec<u8>), NOT a hex string. `fee` is
+// optional (None in the reference implementation; the attached IBC coin
+// pays for the relay).
+
+#[cw_serde]
+pub struct GmpFee {
+    pub amount: String,
+    pub recipient: String,
+}
+
+#[cw_serde]
+pub struct GmpMessage {
+    pub destination_chain: String,
+    pub destination_address: String,
+    pub payload: Vec<u8>,
+    #[serde(rename = "type")]
+    pub type_: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fee: Option<GmpFee>,
 }
 
 // ============ Response Types ============
@@ -227,6 +312,27 @@ pub struct TotalSupplyResponse {
 pub struct StoredMessageResponse {
     pub sender: String,
     pub message: String,
+}
+
+#[cw_serde]
+pub struct OutboundLockResponse {
+    pub lock: Option<OutboundLockInfo>,
+}
+
+#[cw_serde]
+pub struct OutboundLockInfo {
+    pub hashlock: String,
+    pub sender: String,
+    pub token_id: String,
+    pub indicator_id: String,
+    pub amount: Uint128,
+    pub evm_recipient: String,
+    pub destination_chain: String,
+    pub destination_address: String,
+    pub timelock: u64,
+    pub created_at: u64,
+    pub state: String,          // "locked", "claimed", "refunded"
+    pub secret: Option<String>,
 }
 
 #[cw_serde]

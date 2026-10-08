@@ -17,6 +17,20 @@ pub struct Config {
     pub owner: String,
     /// Axelar Gateway IBC address
     pub axelar_gateway: Option<String>,
+    /// Axelar GMP account (receiver of IBC transfers carrying GMP memos).
+    /// Required for on-chain outbound messages (automatic callback and
+    /// reverse-direction prepare). Verify against Axelar docs at deploy time.
+    pub axelar_gmp_account: Option<String>,
+    /// Axelar relayer fee recipient for Cosmos->EVM execution. WITHOUT this
+    /// the memo carries no `fee` field and no relayer executes the message
+    /// on the EVM destination (it stalls after routing). Mainnet:
+    /// axelar1aythygn6z5thymj6tmzfwekzh05ewg3l7d6y89
+    pub axelar_fee_recipient: Option<String>,
+    /// Protocol-minimum bounty (untrn) for reverse-direction locks. Prevents
+    /// the adversarial-sender attack in which bounty = 0 plus a deliberately
+    /// failed callback yields refund-plus-mint at gas cost; sized above the
+    /// monitor's claim_burn execution cost.
+    pub min_bounty: Uint128,
 }
 
 pub const CONFIG: Item<Config> = Item::new("config");
@@ -89,6 +103,37 @@ pub const HTLC_LOCKS: Map<&str, HTLCLock> = Map::new("htlc_locks");
 
 /// User's HTLC locks (for queries)
 pub const USER_HTLC_LOCKS: Map<&str, Vec<String>> = Map::new("user_htlc_locks");
+
+// ============ Reverse Direction (this chain as HTLC source) ============
+
+/// Outbound lock states (mirror of the EVM BridgeHTLC LockState)
+#[cw_serde]
+pub enum OutboundState {
+    Locked,     // Tokens escrowed, prepare message emitted
+    Claimed,    // Destination claim confirmed, escrow burned
+    Refunded,   // Timeout expired, escrow returned to sender
+}
+
+/// Outbound HTLC lock (Neutron -> EVM transfer)
+#[cw_serde]
+pub struct OutboundLock {
+    pub hashlock: String,             // H = keccak256(secret) in hex
+    pub sender: String,               // Locker (this-chain address)
+    pub token_id: String,             // Token class
+    pub indicator_id: String,         // Semantic binding (read from registry)
+    pub amount: Uint128,
+    pub evm_recipient: String,        // 0x-prefixed EVM address
+    pub destination_chain: String,    // Axelar chain name (e.g., "Polygon")
+    pub destination_address: String,  // EVM BridgeHTLC address
+    pub timelock: u64,                // T_e on this chain (unix seconds)
+    pub bounty: Vec<cosmwasm_std::Coin>, // Escrowed bounty for the fallback burn
+    pub created_at: u64,
+    pub state: OutboundState,
+    pub secret: Option<String>,       // Revealed secret after claim
+}
+
+/// Outbound locks by hashlock
+pub const OUTBOUND_LOCKS: Map<&str, OutboundLock> = Map::new("outbound_locks");
 
 // ============ Bridge Statistics ============
 
