@@ -1,0 +1,32 @@
+TLC2 Version 2026.03.02.213938 (rev: 54e73ad)
+Running breadth-first search Model-Checking with fp 75 and seed -659144345671010520 with 1 worker on 4 cores with 869MB heap and 64MB offheap memory [pid: 60] (Linux 6.8.0-124-generic aarch64, Ubuntu 11.0.31 x86_64, MSBDiskFPSet, DiskStateQueue).
+Parsing file /sessions/brave-tender-dirac/mnt/maestria/evm-cosmos-indicator-htlc/formal/HTLCCallback.tla
+Parsing file /tmp/tlc-3196158418701723370/Naturals.tla (jar:file:/sessions/brave-tender-dirac/mnt/maestria/evm-cosmos-indicator-htlc/formal/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /tmp/tlc-3196158418701723370/_TLCTrace.tla (jar:file:/sessions/brave-tender-dirac/mnt/maestria/evm-cosmos-indicator-htlc/formal/tla2tools.jar!/tla2sany/StandardModules/_TLCTrace.tla)
+Parsing file /tmp/tlc-3196158418701723370/TLC.tla (jar:file:/sessions/brave-tender-dirac/mnt/maestria/evm-cosmos-indicator-htlc/formal/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Parsing file /tmp/tlc-3196158418701723370/TLCExt.tla (jar:file:/sessions/brave-tender-dirac/mnt/maestria/evm-cosmos-indicator-htlc/formal/tla2tools.jar!/tla2sany/StandardModules/TLCExt.tla)
+Parsing file /tmp/tlc-3196158418701723370/Sequences.tla (jar:file:/sessions/brave-tender-dirac/mnt/maestria/evm-cosmos-indicator-htlc/formal/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Parsing file /tmp/tlc-3196158418701723370/FiniteSets.tla (jar:file:/sessions/brave-tender-dirac/mnt/maestria/evm-cosmos-indicator-htlc/formal/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /tmp/tlc-3196158418701723370/Integers.tla (jar:file:/sessions/brave-tender-dirac/mnt/maestria/evm-cosmos-indicator-htlc/formal/tla2tools.jar!/tla2sany/StandardModules/Integers.tla)
+Semantic processing of module Naturals
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module Integers
+Semantic processing of module TLCExt
+Semantic processing of module _TLCTrace
+Semantic processing of module HTLCCallback
+Linting of module TLCExt
+Linting of module _TLCTrace
+Linting of module HTLCCallback
+Starting... (2026-07-03 13:20:17)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-07-03 13:20:17.
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.3E-15
+428 states generated, 157 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 15.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 3 and the 95th percentile is 2).
+Finished in 00s at (2026-07-03 13:20:17)
