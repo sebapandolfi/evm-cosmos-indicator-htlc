@@ -1,0 +1,184 @@
+{
+  "runs": [
+    {
+      "run_number": 1,
+      "success": true,
+      "totalTimeSeconds": 95,
+      "lock": {
+        "txHash": "0xa5d839b8a1415e391c5a6aaa574424c74fb76a3ce2edeb6e00e4f61625e63903",
+        "gasUsed": 615633,
+        "timestamp": 1783280175,
+        "blockNumber": 89716785
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-05T19:36:16.310Z",
+          "2026-07-05T19:36:32.250Z"
+        ]
+      },
+      "claim": {
+        "txHash": "9BA0E12600526FD3BC608926F9CCC1B123251C8CADCA3614C06C4667B52D9708",
+        "gasUsed": 467563,
+        "timestamp": 1783280216
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783280263,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 2,
+      "success": true,
+      "totalTimeSeconds": 95,
+      "lock": {
+        "txHash": "0x9a09d8f431f68c633e94dc98c22075b2fdc163ed6c62926f2f83ad9d40ea2b64",
+        "gasUsed": 615645,
+        "timestamp": 1783280300,
+        "blockNumber": 89716869
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-05T19:38:21.554Z",
+          "2026-07-05T19:38:37.437Z"
+        ]
+      },
+      "claim": {
+        "txHash": "7FB145AAE9CA3BDC0C1969FAA1BDEFC4F5CD3A99D502EBA0BEA9E4ADEE10EF8C",
+        "gasUsed": 467594,
+        "timestamp": 1783280342
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783280389,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 3,
+      "success": true,
+      "totalTimeSeconds": 111,
+      "lock": {
+        "txHash": "0xde4fe83c50ef18b6a332ae3fe518b0d4e9ea45791347df07a52c22cc875eeee2",
+        "gasUsed": 615645,
+        "timestamp": 1783280425,
+        "blockNumber": 89716952
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-05T19:40:26.685Z",
+          "2026-07-05T19:40:42.648Z"
+        ]
+      },
+      "claim": {
+        "txHash": "246422DBB440556645926E3B745188AFA9E6E5CB5E688A6D624193FEBC2586AA",
+        "gasUsed": 467609,
+        "timestamp": 1783280468
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783280530,
+        "callbackLatencySeconds": 62,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 4,
+      "success": true,
+      "totalTimeSeconds": 95,
+      "lock": {
+        "txHash": "0xe00149a0065d58b9b7f2206f8acadef97671db2828b613433c3878b2907feeb3",
+        "gasUsed": 615645,
+        "timestamp": 1783280567,
+        "blockNumber": 89717046
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-05T19:42:48.368Z",
+          "2026-07-05T19:43:04.413Z"
+        ]
+      },
+      "claim": {
+        "txHash": "C67ED7E6449445B75A328289DDC3CEE00F2539C6A4E20DE8B792DF6724AE7365",
+        "gasUsed": 467590,
+        "timestamp": 1783280609
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783280655,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 5,
+      "success": true,
+      "totalTimeSeconds": 94,
+      "lock": {
+        "txHash": "0x1c30da94724492efb8e5cbe886ff573c828f543bbe5fbc374c24b4b9b1e70bbf",
+        "gasUsed": 615645,
+        "timestamp": 1783280691,
+        "blockNumber": 89717130
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-05T19:44:52.984Z",
+          "2026-07-05T19:45:08.816Z"
+        ]
+      },
+      "claim": {
+        "txHash": "1D7F6D2649185F7DB2F95EE40D8E580D8AC7901106F6677FD6936C4D7E16D96F",
+        "gasUsed": 467583,
+        "timestamp": 1783280733
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783280780,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    }
+  ],
+  "summary": {
+    "totalRuns": 5,
+    "successfulRuns": 5,
+    "lockGas": {
+      "mean": 615642.6,
+      "min": 615633,
+      "max": 615645,
+      "stdDev": 4.8
+    },
+    "claimGas": {
+      "mean": 467587.8,
+      "min": 467563,
+      "max": 467609,
+      "stdDev": 15.04
+    },
+    "burnGas": {
+      "mean": 0,
+      "min": 0,
+      "max": 0,
+      "stdDev": 0
+    },
+    "relayLatency": {
+      "mean": 33,
+      "min": 33,
+      "max": 33,
+      "stdDev": 0
+    },
+    "totalTime": {
+      "mean": 98,
+      "min": 94,
+      "max": 111,
+      "stdDev": 6.51
+    },
+    "callbackSuccessRate": 0.8
+  }
+}

@@ -1,0 +1,189 @@
+{
+  "runs": [
+    {
+      "run_number": 1,
+      "success": true,
+      "totalTimeSeconds": 52,
+      "lock": {
+        "txHash": "0xf3d5049bc608de2716c5a11d075921c8a415c3a5e6c0df5b16aaa791c0f2acaa",
+        "gasUsed": 533280,
+        "timestamp": 1776008242,
+        "blockNumber": 85444102
+      },
+      "relay": {
+        "relayLatencySeconds": 34,
+        "polledAt": [
+          "2026-04-12T15:37:23.716Z",
+          "2026-04-12T15:37:39.858Z"
+        ]
+      },
+      "claim": {
+        "txHash": "AA514DD9C6D7A9CE020D07E4B1007F3749E24D83B6B53A0EFCBE26B6BE318394",
+        "gasUsed": 233606,
+        "timestamp": 1776008281
+      },
+      "burn": {
+        "txHash": "0x0a55c3b58df571020d5e6f9b9f1e8fe1440801129f1bbb86360af2565ad2955a",
+        "gasUsed": 78850,
+        "timestamp": 1776008288,
+        "blockNumber": 85444125,
+        "wasCallback": false
+      }
+    },
+    {
+      "run_number": 2,
+      "success": true,
+      "totalTimeSeconds": 52,
+      "lock": {
+        "txHash": "0x34f2060e059082945d90d657405ea60ff08d1045344f95750d44d76153a25b32",
+        "gasUsed": 533280,
+        "timestamp": 1776008324,
+        "blockNumber": 85444143
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-04-12T15:38:45.493Z",
+          "2026-04-12T15:39:01.623Z"
+        ]
+      },
+      "claim": {
+        "txHash": "F220EA9625D636E46D4C129A8E156242B5D7AC852C862BF6213FC4944D723769",
+        "gasUsed": 233606,
+        "timestamp": 1776008363
+      },
+      "burn": {
+        "txHash": "0x725b47e532bd91a50ee7b921a5298a56dca54b200b35826ceed3495b24271034",
+        "gasUsed": 78850,
+        "timestamp": 1776008370,
+        "blockNumber": 85444166,
+        "wasCallback": false
+      }
+    },
+    {
+      "run_number": 3,
+      "success": true,
+      "totalTimeSeconds": 52,
+      "lock": {
+        "txHash": "0x2d90a1442e4d5f00e295765b169640de575c4710a91af2157d029668398b8c36",
+        "gasUsed": 533280,
+        "timestamp": 1776008406,
+        "blockNumber": 85444184
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-04-12T15:40:07.578Z",
+          "2026-04-12T15:40:23.712Z"
+        ]
+      },
+      "claim": {
+        "txHash": "38069F50221C458F95897AD9080B4504644B93B2F3D415414D04993B9B8FC3E2",
+        "gasUsed": 233606,
+        "timestamp": 1776008445
+      },
+      "burn": {
+        "txHash": "0x6545e33cccc47db7132e132f6b8a014095d9a628bae4b3fbd9ea65cf8377e16b",
+        "gasUsed": 78850,
+        "timestamp": 1776008452,
+        "blockNumber": 85444207,
+        "wasCallback": false
+      }
+    },
+    {
+      "run_number": 4,
+      "success": true,
+      "totalTimeSeconds": 52,
+      "lock": {
+        "txHash": "0xad0e2bc30ff29a1abbbf1883c1b35faab7cec47e7aefcc8f7eeaaf0b7cbc7371",
+        "gasUsed": 533280,
+        "timestamp": 1776008488,
+        "blockNumber": 85444225
+      },
+      "relay": {
+        "relayLatencySeconds": 34,
+        "polledAt": [
+          "2026-04-12T15:41:29.589Z",
+          "2026-04-12T15:41:45.813Z"
+        ]
+      },
+      "claim": {
+        "txHash": "197663A331DCDBBB8EC2EBFBFD7A110922F71F3B6646369F89E37D3550C3752D",
+        "gasUsed": 233606,
+        "timestamp": 1776008527
+      },
+      "burn": {
+        "txHash": "0x72d12fd1450db2941135a6bb0008a7b2e5866f8855236a6a80fdb57e90022a04",
+        "gasUsed": 78850,
+        "timestamp": 1776008534,
+        "blockNumber": 85444248,
+        "wasCallback": false
+      }
+    },
+    {
+      "run_number": 5,
+      "success": true,
+      "totalTimeSeconds": 53,
+      "lock": {
+        "txHash": "0x883846190710211da5b0c4ef485719fa3488543898be966ed0b455b4dadd9007",
+        "gasUsed": 533268,
+        "timestamp": 1776008570,
+        "blockNumber": 85444266
+      },
+      "relay": {
+        "relayLatencySeconds": 34,
+        "polledAt": [
+          "2026-04-12T15:42:51.822Z",
+          "2026-04-12T15:43:08.019Z"
+        ]
+      },
+      "claim": {
+        "txHash": "200424B6FD6C3265C21DDE6CE7D87FFBAEBD7596A3A0E52C659D5981D52FFE61",
+        "gasUsed": 233606,
+        "timestamp": 1776008610
+      },
+      "burn": {
+        "txHash": "0xfb654da644c21c21cbe879e90299ef254908b1fd57d183fb59873fde09da5b00",
+        "gasUsed": 78838,
+        "timestamp": 1776008617,
+        "blockNumber": 85444289,
+        "wasCallback": false
+      }
+    }
+  ],
+  "summary": {
+    "totalRuns": 5,
+    "successfulRuns": 5,
+    "lockGas": {
+      "mean": 533277.6,
+      "min": 533268,
+      "max": 533280,
+      "stdDev": 4.8
+    },
+    "claimGas": {
+      "mean": 233606,
+      "min": 233606,
+      "max": 233606,
+      "stdDev": 0
+    },
+    "burnGas": {
+      "mean": 78847.6,
+      "min": 78838,
+      "max": 78850,
+      "stdDev": 4.8
+    },
+    "relayLatency": {
+      "mean": 33.6,
+      "min": 33,
+      "max": 34,
+      "stdDev": 0.49
+    },
+    "totalTime": {
+      "mean": 52.2,
+      "min": 52,
+      "max": 53,
+      "stdDev": 0.4
+    },
+    "callbackSuccessRate": 0.8
+  }
+}
