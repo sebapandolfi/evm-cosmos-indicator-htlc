@@ -1,0 +1,52 @@
+[
+  {
+    "direction": "neutron->polygon",
+    "hashlock": "0xd38be5eab8421c8be154f6b5ead389ce8a15e5504de17deb38ec1154d54b6f75",
+    "timelock": 1783286638,
+    "startedAt": "2026-07-05T19:23:58.996Z",
+    "legs": {
+      "lock": {
+        "txHash": "1CEABA92A55DDEFCEF8DD6E5B3DFCDBD8F8899B61F2BEF2B600661A72A53E976",
+        "gasUsed": 457585,
+        "at": "2026-07-05T19:24:07.033Z"
+      },
+      "forwardRelaySeconds": 55,
+      "claim": {
+        "txHash": "0x4c3030c5a7400895efe228db5be477954c27dd57fc53783ecb87525a9c9dd2de",
+        "gasUsed": 225752,
+        "at": "2026-07-05T19:25:01.294Z"
+      },
+      "callbackRelaySeconds": 31,
+      "burn": {
+        "mode": "automatic-callback"
+      }
+    },
+    "endToEndSeconds": 93,
+    "completedAt": "2026-07-05T19:25:32.347Z"
+  },
+  {
+    "direction": "neutron->polygon",
+    "hashlock": "0x69d31b2d835a6b03dd1c3036774f364b98048cf6a866477d78450ab455beb794",
+    "timelock": 1784472457,
+    "startedAt": "2026-07-19T12:47:37.580Z",
+    "legs": {
+      "lock": {
+        "txHash": "EDF4DA775B6875055B680867FAA1D92328455B3A2753961C8832B63076C9E2F2",
+        "gasUsed": 458503,
+        "at": "2026-07-19T12:47:45.951Z"
+      },
+      "forwardRelaySeconds": 55,
+      "claim": {
+        "txHash": "0xdb382a858f0f8a6b162409ab892cc98a046f41c8f567d7d29837a45d57f1e7d2",
+        "gasUsed": 225796,
+        "at": "2026-07-19T12:48:38.829Z"
+      },
+      "callbackRelaySeconds": 31,
+      "burn": {
+        "mode": "automatic-callback"
+      }
+    },
+    "endToEndSeconds": 93,
+    "completedAt": "2026-07-19T12:49:10.184Z"
+  }
+]

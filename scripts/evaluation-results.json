@@ -1,0 +1,1743 @@
+{
+  "runs": [
+    {
+      "run_number": 1,
+      "success": true,
+      "totalTimeSeconds": 102,
+      "lock": {
+        "txHash": "0x88a647f02e4da689326ff708975c0bcd99511a7ee3f67683fc81523bbe90d29f",
+        "gasUsed": 675071,
+        "timestamp": 1783282424,
+        "blockNumber": 89718285
+      },
+      "relay": {
+        "relayLatencySeconds": 34,
+        "polledAt": [
+          "2026-07-05T20:13:46.042Z",
+          "2026-07-05T20:14:02.108Z"
+        ]
+      },
+      "claim": {
+        "txHash": "136AE9259E1A20C5A38937105F9A5809C6FA591EDAFE70DAF684E64D820FB541",
+        "gasUsed": 466792,
+        "timestamp": 1783282467
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783282514,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 2,
+      "success": true,
+      "totalTimeSeconds": 115,
+      "lock": {
+        "txHash": "0xcfe42074ca3a6f5ac191ada2f3122bca318ca5dea1f0365c8d7e88dfddfae435",
+        "gasUsed": 639191,
+        "timestamp": 1783282657,
+        "blockNumber": 89718440
+      },
+      "relay": {
+        "relayLatencySeconds": 49,
+        "polledAt": [
+          "2026-07-05T20:17:38.308Z",
+          "2026-07-05T20:17:54.221Z",
+          "2026-07-05T20:18:10.162Z"
+        ]
+      },
+      "claim": {
+        "txHash": "7F3F19CA0646A1C50109C63B2625A1C4E1361CC8A6126393F59908AFCE3AA7FD",
+        "gasUsed": 467094,
+        "timestamp": 1783282717
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783282764,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 3,
+      "success": true,
+      "totalTimeSeconds": 96,
+      "lock": {
+        "txHash": "0xbf0e4349f34a39b8737b47c190ee267c690ce845fa30e363f30df3182767a099",
+        "gasUsed": 639191,
+        "timestamp": 1783282801,
+        "blockNumber": 89718536
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-05T20:20:01.745Z",
+          "2026-07-05T20:20:18.301Z"
+        ]
+      },
+      "claim": {
+        "txHash": "1E00C60BAA7B84317D6D2C6401FF122C61CC8EB94B0DDA1F62C38606B7773EBD",
+        "gasUsed": 467073,
+        "timestamp": 1783282842
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783282890,
+        "callbackLatencySeconds": 48,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 4,
+      "success": true,
+      "totalTimeSeconds": 95,
+      "lock": {
+        "txHash": "0x1bad16016915c0f09e06607090fcac3da6374e4b92d847fe1af145fa0a768d6e",
+        "gasUsed": 639179,
+        "timestamp": 1783282927,
+        "blockNumber": 89718620
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-05T20:22:08.182Z",
+          "2026-07-05T20:22:24.049Z"
+        ]
+      },
+      "claim": {
+        "txHash": "37FE96F72E33479A272BAD678D69B280481E858ED710090A61C4BE6EEC33EEBE",
+        "gasUsed": 467100,
+        "timestamp": 1783282969
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783283015,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 5,
+      "success": true,
+      "totalTimeSeconds": 96,
+      "lock": {
+        "txHash": "0x63ef8a6b92831ed20f2cfda30426dea4b1a09e5ab5feb06abefffa885fa69382",
+        "gasUsed": 639191,
+        "timestamp": 1783283052,
+        "blockNumber": 89718703
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-05T20:24:13.771Z",
+          "2026-07-05T20:24:29.777Z"
+        ]
+      },
+      "claim": {
+        "txHash": "B02352FDF35EC7931C8CEDA65181E2200E90EC55BB584B41167F6B71136C10F2",
+        "gasUsed": 467172,
+        "timestamp": 1783283094
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783283141,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 6,
+      "success": true,
+      "totalTimeSeconds": 97,
+      "lock": {
+        "txHash": "0x1f7a3b06311f5f424dd07a5e60b657c956b101ee73b66765bdd959c5d30274f3",
+        "gasUsed": 639179,
+        "timestamp": 1783283179,
+        "blockNumber": 89718788
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-05T20:26:19.972Z",
+          "2026-07-05T20:26:36.164Z"
+        ]
+      },
+      "claim": {
+        "txHash": "04FF99B866A7D5A647033839CE87F7036802A89DE7F88CFFBE7222B57BC97794",
+        "gasUsed": 467157,
+        "timestamp": 1783283221
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783283268,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 7,
+      "success": true,
+      "totalTimeSeconds": 107,
+      "lock": {
+        "txHash": "0xeaf03d4eb32ff2cdf597e76b6f6e850679823591ed0e2d932aae5f1510d2dfc2",
+        "gasUsed": 639191,
+        "timestamp": 1783336846,
+        "blockNumber": 89754565
+      },
+      "relay": {
+        "relayLatencySeconds": 34,
+        "polledAt": [
+          "2026-07-06T11:20:47.910Z",
+          "2026-07-06T11:21:03.758Z"
+        ]
+      },
+      "claim": {
+        "txHash": "122AB07DC5055F56084C8411E3C353CA7A56946C8EDE66CA1C932B76A52A232D",
+        "gasUsed": 467114,
+        "timestamp": 1783336885
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783336947,
+        "callbackLatencySeconds": 62,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 8,
+      "success": true,
+      "totalTimeSeconds": 98,
+      "lock": {
+        "txHash": "0x35ca560e2d24562f045df9fb4ebd84e0445df4675920f91e80f817b46ed3a054",
+        "gasUsed": 639191,
+        "timestamp": 1783336983,
+        "blockNumber": 89754657
+      },
+      "relay": {
+        "relayLatencySeconds": 34,
+        "polledAt": [
+          "2026-07-06T11:23:04.896Z",
+          "2026-07-06T11:23:21.757Z"
+        ]
+      },
+      "claim": {
+        "txHash": "31C01B20ADCD5D139CB9D9FE4F4E07D396BFCA80296A4C23AEE4D2AD49BABCF6",
+        "gasUsed": 467118,
+        "timestamp": 1783337027
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783337074,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 9,
+      "success": true,
+      "totalTimeSeconds": 92,
+      "lock": {
+        "txHash": "0x2d4c098b55e62f73a80491362e98590f6e9e75567a904bb953e33456ae7471d3",
+        "gasUsed": 639191,
+        "timestamp": 1783337112,
+        "blockNumber": 89754742
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-06T11:25:13.359Z",
+          "2026-07-06T11:25:29.464Z"
+        ]
+      },
+      "claim": {
+        "txHash": "C60C42FE07A64DC26389FBF7CBAB223B30E815AC2F2124A8D585164292548A29",
+        "gasUsed": 467113,
+        "timestamp": 1783337150
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783337197,
+        "callbackLatencySeconds": 46,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 10,
+      "success": true,
+      "totalTimeSeconds": 122,
+      "lock": {
+        "txHash": "0xc4d19a8c71734ddff0b0ec88832878a213769523738772182ec6e3b169e8a584",
+        "gasUsed": 639191,
+        "timestamp": 1783337233,
+        "blockNumber": 89754824
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-06T11:27:14.092Z",
+          "2026-07-06T11:27:30.079Z"
+        ]
+      },
+      "claim": {
+        "txHash": "14B151BF80B7A44D01FA01F713A28C49FD8238FBBB7E7D9E6300684C3A34211C",
+        "gasUsed": 467330,
+        "timestamp": 1783337271
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783337349,
+        "callbackLatencySeconds": 78,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 11,
+      "success": true,
+      "totalTimeSeconds": 156,
+      "lock": {
+        "txHash": "0xa36b66587651118bf89b4121300555fc73b629401eafe7f7a6682a5389cbb33d",
+        "gasUsed": 639191,
+        "timestamp": 1783337386,
+        "blockNumber": 89754926
+      },
+      "relay": {
+        "relayLatencySeconds": 49,
+        "polledAt": [
+          "2026-07-06T11:29:47.540Z",
+          "2026-07-06T11:30:03.748Z",
+          "2026-07-06T11:30:19.689Z"
+        ]
+      },
+      "claim": {
+        "txHash": "5B162A9E5CBA1664AC84058AD1BC3EE8560D4CB61F529DEB88A0F53CE426D1CB",
+        "gasUsed": 467325,
+        "timestamp": 1783337441
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783337535,
+        "callbackLatencySeconds": 94,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 12,
+      "success": true,
+      "totalTimeSeconds": 103,
+      "lock": {
+        "txHash": "0x54f309fcd3dc68abc2bc5e9cd757398a4f8339252619665103a9545f11902e5e",
+        "gasUsed": 639191,
+        "timestamp": 1783357566,
+        "blockNumber": 89768379
+      },
+      "relay": {
+        "relayLatencySeconds": 36,
+        "polledAt": [
+          "2026-07-06T17:06:10.291Z",
+          "2026-07-06T17:06:26.421Z"
+        ]
+      },
+      "claim": {
+        "txHash": "E5DC308A4C495176C2907EFA56AAC5531D57471FF62DE0A9F937ECD90ADFD536",
+        "gasUsed": 467336,
+        "timestamp": 1783357615
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783357662,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 13,
+      "success": true,
+      "totalTimeSeconds": 99,
+      "lock": {
+        "txHash": "0x0c0547d2c6af172b90c145f8d6756e8236f0c1fc4e822e3ad7a679a09a2758e5",
+        "gasUsed": 639191,
+        "timestamp": 1783357701,
+        "blockNumber": 89768469
+      },
+      "relay": {
+        "relayLatencySeconds": 34,
+        "polledAt": [
+          "2026-07-06T17:08:23.365Z",
+          "2026-07-06T17:08:39.426Z"
+        ]
+      },
+      "claim": {
+        "txHash": "866A88A529BAD312F5D4A0B4419A57157464005A95C4FCAB72CA10FB0B652B89",
+        "gasUsed": 467334,
+        "timestamp": 1783357740
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783357791,
+        "callbackLatencySeconds": 51,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 14,
+      "success": true,
+      "totalTimeSeconds": 99,
+      "lock": {
+        "txHash": "0xab33d78ce5010b7388ebf2e1483a175da8c2ab42149140cc054d8b51e9312cea",
+        "gasUsed": 639179,
+        "timestamp": 1783357829,
+        "blockNumber": 89768554
+      },
+      "relay": {
+        "relayLatencySeconds": 34,
+        "polledAt": [
+          "2026-07-06T17:10:31.268Z",
+          "2026-07-06T17:10:47.395Z"
+        ]
+      },
+      "claim": {
+        "txHash": "90457727363C8CFC90BFD41400117465EBF7C59475883515A933ACBAF2552FCB",
+        "gasUsed": 467313,
+        "timestamp": 1783357875
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783357922,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 15,
+      "success": true,
+      "totalTimeSeconds": 127,
+      "lock": {
+        "txHash": "0xfd813ad8db9ea040b82f9060a4a2fe633d550819536963e8adaed100bf3ae63b",
+        "gasUsed": 639191,
+        "timestamp": 1783357960,
+        "blockNumber": 89768642
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-06T17:12:41.244Z",
+          "2026-07-06T17:12:57.109Z"
+        ]
+      },
+      "claim": {
+        "txHash": "58EE88D913092AF70A5E4EBDB2702BC7BCBB19B4F7E28DEF74445A5004041F49",
+        "gasUsed": 467307,
+        "timestamp": 1783358001
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783358079,
+        "callbackLatencySeconds": 78,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 16,
+      "success": true,
+      "totalTimeSeconds": 108,
+      "lock": {
+        "txHash": "0x94eda92e679d4ad2eef1a7162a764146164dda471aa5485583d4e92e10857fb1",
+        "gasUsed": 639191,
+        "timestamp": 1783358116,
+        "blockNumber": 89768746
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-06T17:15:17.234Z",
+          "2026-07-06T17:15:33.264Z"
+        ]
+      },
+      "claim": {
+        "txHash": "28599175FA45843B10499EC3C1B154D1CAFE0D151C5D62A283412F9B073C015D",
+        "gasUsed": 467338,
+        "timestamp": 1783358154
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1783358217,
+        "callbackLatencySeconds": 62,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 17,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 18,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 19,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 20,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 21,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 22,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 23,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 24,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 25,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 26,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 27,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 28,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 29,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 30,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 31,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 32,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 33,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 34,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 35,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 36,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 37,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 38,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 39,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 40,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 41,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 42,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 43,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 44,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 45,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 46,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 47,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 48,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 49,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 50,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 51,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 52,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 53,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 54,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 55,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 56,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 57,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 58,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 59,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 60,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 61,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 62,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 63,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 64,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 65,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 66,
+      "success": false,
+      "error": "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: spendable balance 695006ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD is smaller than 1000000ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD: insufficient funds [cosmos/cosmos-sdk@v0.53.6/x/bank/keeper/send.go:343] with gas used: '153656': unknown request"
+    },
+    {
+      "run_number": 67,
+      "success": true,
+      "totalTimeSeconds": 164,
+      "lock": {
+        "txHash": "0xe4e2288c1ae31df3693cf2754e3b093117003f355261ff6e5c9330f8899c9c1c",
+        "gasUsed": 639191,
+        "timestamp": 1784465190,
+        "blockNumber": 90506793
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-19T12:46:31.397Z",
+          "2026-07-19T12:46:47.479Z"
+        ]
+      },
+      "claim": {
+        "txHash": "8B90FC3B72CBA92578CB7D6B0342D2ACDA60E60C2C672AB142E687A0C253CB3E",
+        "gasUsed": 467935,
+        "timestamp": 1784465235
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784465344,
+        "callbackLatencySeconds": 109,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 68,
+      "success": true,
+      "totalTimeSeconds": 94,
+      "lock": {
+        "txHash": "0x31ee193addb0c946c2f265988cc0dfd4db690d944196d2fff2025fc835d2dcd0",
+        "gasUsed": 639191,
+        "timestamp": 1784465383,
+        "blockNumber": 90506922
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-19T12:49:43.845Z",
+          "2026-07-19T12:49:59.848Z"
+        ]
+      },
+      "claim": {
+        "txHash": "F71CC253272F61290A2562C122FB55BE84E14F67913D5316E2D2C248CD808A0D",
+        "gasUsed": 467937,
+        "timestamp": 1784465421
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784465467,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 69,
+      "success": true,
+      "totalTimeSeconds": 99,
+      "lock": {
+        "txHash": "0xa142bdebfda5fc4550d430ffcdfa967f2f56b8e8d8cd2b58765a5a1b356db089",
+        "gasUsed": 639191,
+        "timestamp": 1784465506,
+        "blockNumber": 90507004
+      },
+      "relay": {
+        "relayLatencySeconds": 35,
+        "polledAt": [
+          "2026-07-19T12:51:47.265Z",
+          "2026-07-19T12:52:03.754Z"
+        ]
+      },
+      "claim": {
+        "txHash": "DC94ADE89CCFFDE4AC1C7B32FB6B847A0323E58CB91B0FDF197926575A9E48FB",
+        "gasUsed": 467928,
+        "timestamp": 1784465549
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784465596,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 70,
+      "success": true,
+      "totalTimeSeconds": 93,
+      "lock": {
+        "txHash": "0x4df58fbfc41178deaee8ba883f2870d5190689b03e56833311df9abecb79595e",
+        "gasUsed": 639179,
+        "timestamp": 1784465634,
+        "blockNumber": 90507089
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-19T12:53:55.160Z",
+          "2026-07-19T12:54:11.346Z"
+        ]
+      },
+      "claim": {
+        "txHash": "87CF55A73D3DBE18EE12AB6910862280E166E43EB8371BAE617F7EAAC79628EF",
+        "gasUsed": 467944,
+        "timestamp": 1784465672
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784465719,
+        "callbackLatencySeconds": 46,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 71,
+      "success": true,
+      "totalTimeSeconds": 96,
+      "lock": {
+        "txHash": "0xa8ed6f46a68de70b50cd03287f3eb86bf869be4e8dab1276890bf03013b76dde",
+        "gasUsed": 639191,
+        "timestamp": 1784465756,
+        "blockNumber": 90507171
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-19T12:55:57.739Z",
+          "2026-07-19T12:56:13.821Z"
+        ]
+      },
+      "claim": {
+        "txHash": "48C9A5EA7F759C423FAFD0D8A251ECAE07FA64CA24EC185F74C49557FBB6D494",
+        "gasUsed": 467947,
+        "timestamp": 1784465798
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784465845,
+        "callbackLatencySeconds": 46,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 72,
+      "success": true,
+      "totalTimeSeconds": 96,
+      "lock": {
+        "txHash": "0xb93663e404abf11febfd46a825456a5337451c2053e5bd89ba0631892b0b47f5",
+        "gasUsed": 639191,
+        "timestamp": 1784556959,
+        "blockNumber": 90567973
+      },
+      "relay": {
+        "relayLatencySeconds": 34,
+        "polledAt": [
+          "2026-07-20T14:16:01.040Z",
+          "2026-07-20T14:16:17.374Z"
+        ]
+      },
+      "claim": {
+        "txHash": "4D22FE5A4A5F67CDB433674EBDA76E06713D29F4A9033FCFB87B81DF93DA0F1A",
+        "gasUsed": 467916,
+        "timestamp": 1784556998
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784557046,
+        "callbackLatencySeconds": 48,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 73,
+      "success": true,
+      "totalTimeSeconds": 94,
+      "lock": {
+        "txHash": "0x860f9edf9e87f1657c5598a9c687147e8a2c3a36c4a62a00801f40b383102b3b",
+        "gasUsed": 639191,
+        "timestamp": 1784557085,
+        "blockNumber": 90568057
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-20T14:18:06.678Z",
+          "2026-07-20T14:18:22.594Z"
+        ]
+      },
+      "claim": {
+        "txHash": "DFF82FDAACBFC371A4BF3816448EECE4023FC2076AB219A7E803FC218C18ECC5",
+        "gasUsed": 467923,
+        "timestamp": 1784557123
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784557170,
+        "callbackLatencySeconds": 46,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 74,
+      "success": true,
+      "totalTimeSeconds": 124,
+      "lock": {
+        "txHash": "0xc4cb6d802d60662e593eb145ca2c22f076d5f902f4fdab7832224dc385bc0224",
+        "gasUsed": 639191,
+        "timestamp": 1784557207,
+        "blockNumber": 90568139
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-20T14:20:08.372Z",
+          "2026-07-20T14:20:24.302Z"
+        ]
+      },
+      "claim": {
+        "txHash": "79DC4F05AFC16EE2B00410B8DE59B6012CCD502624C995C6E6285F77C84F3102",
+        "gasUsed": 467910,
+        "timestamp": 1784557245
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784557324,
+        "callbackLatencySeconds": 79,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 75,
+      "success": true,
+      "totalTimeSeconds": 93,
+      "lock": {
+        "txHash": "0x87b85aecfde2a6e7986610c3c691fe47fa2268551ce3c5e82edf73276f3ecb87",
+        "gasUsed": 639191,
+        "timestamp": 1784557363,
+        "blockNumber": 90568243
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-20T14:22:44.636Z",
+          "2026-07-20T14:23:00.444Z"
+        ]
+      },
+      "claim": {
+        "txHash": "8FA8836395813A799B068228A16ECBD56B9065B3E6A795622F55B848F83F6176",
+        "gasUsed": 467946,
+        "timestamp": 1784557401
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784557448,
+        "callbackLatencySeconds": 46,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 76,
+      "success": true,
+      "totalTimeSeconds": 96,
+      "lock": {
+        "txHash": "0x495548177de293d98b2636380a5eade2a32e0842812fa521637e7f97e2abc450",
+        "gasUsed": 639191,
+        "timestamp": 1784557485,
+        "blockNumber": 90568324
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-20T14:24:46.275Z",
+          "2026-07-20T14:25:02.268Z"
+        ]
+      },
+      "claim": {
+        "txHash": "16514226F039BE9285063316CF14F156AD8D37A09C50DECAB73025372EA6255B",
+        "gasUsed": 467926,
+        "timestamp": 1784557527
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784557573,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 77,
+      "success": true,
+      "totalTimeSeconds": 97,
+      "lock": {
+        "txHash": "0x545e33554df9da97f3854473dec6064a69a4081bd0d5d91b52b83c3c63886b52",
+        "gasUsed": 639191,
+        "timestamp": 1784644174,
+        "blockNumber": 90626117
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-21T14:29:35.179Z",
+          "2026-07-21T14:29:51.566Z"
+        ]
+      },
+      "claim": {
+        "txHash": "7FA6A4101103CE3BA67E2818993FE3E6182586B3D1347A87B04DFC39370F98D0",
+        "gasUsed": 467923,
+        "timestamp": 1784644216
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784644262,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 78,
+      "success": true,
+      "totalTimeSeconds": 96,
+      "lock": {
+        "txHash": "0xcfc13b33bfe6ce0faf04498b11087ef6da6a31fcb107f46f9cfe6363fc3aa01f",
+        "gasUsed": 639191,
+        "timestamp": 1784644300,
+        "blockNumber": 90626201
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-21T14:31:41.534Z",
+          "2026-07-21T14:31:57.525Z"
+        ]
+      },
+      "claim": {
+        "txHash": "B4CF587B5928A102788723705999A76CEFD395F05980D335CD03A33D769F920B",
+        "gasUsed": 467928,
+        "timestamp": 1784644341
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784644388,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 79,
+      "success": true,
+      "totalTimeSeconds": 96,
+      "lock": {
+        "txHash": "0x5cd6d9b264beef4193ab6852ef1a364de3a85502265f73dd543c50033c6e6af1",
+        "gasUsed": 639191,
+        "timestamp": 1784644426,
+        "blockNumber": 90626284
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-21T14:33:47.013Z",
+          "2026-07-21T14:34:03.261Z"
+        ]
+      },
+      "claim": {
+        "txHash": "136E1A3F588A97F25879D5A040E6472CD85312923D23E61FEC3541316FABF0EA",
+        "gasUsed": 467937,
+        "timestamp": 1784644467
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784644514,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 80,
+      "success": true,
+      "totalTimeSeconds": 97,
+      "lock": {
+        "txHash": "0xbc48c3c1ed75d9fee07ac75957b61ea8c33e0bbdec3b901fe221d27635466326",
+        "gasUsed": 639191,
+        "timestamp": 1784644554,
+        "blockNumber": 90626370
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-21T14:35:55.311Z",
+          "2026-07-21T14:36:11.033Z"
+        ]
+      },
+      "claim": {
+        "txHash": "517FAA44E45DF011E2EBABAADA8166D9230C1336F25BBD925FC708728E9261BD",
+        "gasUsed": 467941,
+        "timestamp": 1784644595
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784644641,
+        "callbackLatencySeconds": 46,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 81,
+      "success": true,
+      "totalTimeSeconds": 96,
+      "lock": {
+        "txHash": "0x82eb55eac8bb0a5a9aaacbc0d73cf41cf58c3ac5fa782729c0d7fc517d6a40ed",
+        "gasUsed": 639191,
+        "timestamp": 1784644679,
+        "blockNumber": 90626454
+      },
+      "relay": {
+        "relayLatencySeconds": 32,
+        "polledAt": [
+          "2026-07-21T14:37:59.723Z",
+          "2026-07-21T14:38:15.475Z"
+        ]
+      },
+      "claim": {
+        "txHash": "6CD22F74AF5BE65EEFAEA8FFD03A31A1DFBB97098DB12351B96BE2A5447000E4",
+        "gasUsed": 467946,
+        "timestamp": 1784644720
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784644767,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 82,
+      "success": true,
+      "totalTimeSeconds": 86,
+      "lock": {
+        "txHash": "0x53c07c124a1371af466dac77e3be8ef5209140046f6ad56a8d28c0cafebc7614",
+        "gasUsed": 639191,
+        "timestamp": 1784737510,
+        "blockNumber": 90688340
+      },
+      "relay": {
+        "relayLatencySeconds": 17,
+        "polledAt": [
+          "2026-07-22T16:25:11.487Z"
+        ]
+      },
+      "claim": {
+        "txHash": "27EF06CFC56968D7957D647811D9FC21A197DB67BBF43EC085882CA57FFEAB63",
+        "gasUsed": 467907,
+        "timestamp": 1784737540
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784737587,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 83,
+      "success": true,
+      "totalTimeSeconds": 97,
+      "lock": {
+        "txHash": "0x246ec2abe0eade511d4af2c68083d77fc9b9213d5084ac125967ab51d021360c",
+        "gasUsed": 639191,
+        "timestamp": 1784737625,
+        "blockNumber": 90688417
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-22T16:27:06.710Z",
+          "2026-07-22T16:27:22.447Z"
+        ]
+      },
+      "claim": {
+        "txHash": "08C539B4AF41E1454D2404EECFEFEC4118C707F71FC6813582FB903A18CC8D91",
+        "gasUsed": 467926,
+        "timestamp": 1784737667
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784737714,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 84,
+      "success": true,
+      "totalTimeSeconds": 80,
+      "lock": {
+        "txHash": "0x63b7319d32094f0d57a8cc52245a08f86a03a7cdd317434134c6fcd2d6ab39c2",
+        "gasUsed": 639191,
+        "timestamp": 1784737751,
+        "blockNumber": 90688501
+      },
+      "relay": {
+        "relayLatencySeconds": 17,
+        "polledAt": [
+          "2026-07-22T16:29:12.655Z"
+        ]
+      },
+      "claim": {
+        "txHash": "A04716BBEF68F7E893CE4E11033DE184FB6E2BE82876CADEF83F26E4C592D742",
+        "gasUsed": 467931,
+        "timestamp": 1784737777
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784737824,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 85,
+      "success": true,
+      "totalTimeSeconds": 97,
+      "lock": {
+        "txHash": "0xe9960440099bd4c9ed39f8c69656566bfc6e722919eb2d304fd185842a8d8c1b",
+        "gasUsed": 639179,
+        "timestamp": 1784737862,
+        "blockNumber": 90688575
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-22T16:31:03.741Z",
+          "2026-07-22T16:31:19.882Z"
+        ]
+      },
+      "claim": {
+        "txHash": "ECE5A7498BA2C0CCB8B22F1156AFFE40EF6AEBA344B46A3461EE09DC2F3932F1",
+        "gasUsed": 467910,
+        "timestamp": 1784737904
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784737951,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 86,
+      "success": true,
+      "totalTimeSeconds": 96,
+      "lock": {
+        "txHash": "0xfd2ef6829c0e36df67a4b32a7fdc4fdb406e106d0ed19b3a4eb73529c8e92ede",
+        "gasUsed": 639191,
+        "timestamp": 1784737988,
+        "blockNumber": 90688659
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-22T16:33:09.624Z",
+          "2026-07-22T16:33:25.973Z"
+        ]
+      },
+      "claim": {
+        "txHash": "673B2652254BAB87677D05DDA62FE7739949F66801116CEFF7F6C8C75B2A5C70",
+        "gasUsed": 467952,
+        "timestamp": 1784738030
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784738077,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 87,
+      "success": true,
+      "totalTimeSeconds": 100,
+      "lock": {
+        "txHash": "0x7a496c0c99674aebe89764e9d0b202721c230f6e2c17a0eb18dce3ffc83dd656",
+        "gasUsed": 639191,
+        "timestamp": 1784822370,
+        "blockNumber": 90744914
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-23T15:59:31.735Z",
+          "2026-07-23T15:59:47.935Z"
+        ]
+      },
+      "claim": {
+        "txHash": "7F2F7788E6D55D64D011F76E48F1C1523AB2DBCB248E659A63BEFF69D3B975FA",
+        "gasUsed": 467935,
+        "timestamp": 1784822413
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784822461,
+        "callbackLatencySeconds": 48,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 88,
+      "success": true,
+      "totalTimeSeconds": 93,
+      "lock": {
+        "txHash": "0x3bf3058eb09e672b36dd6efe429b1fba28cbee1f4c190f22af8c58436b5f1b2f",
+        "gasUsed": 639191,
+        "timestamp": 1784822499,
+        "blockNumber": 90745000
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-23T16:01:40.760Z",
+          "2026-07-23T16:01:56.659Z"
+        ]
+      },
+      "claim": {
+        "txHash": "BCC47D46EA8BDC523DD088D1129FA003B3FCE25F97818455E6ECA5531ABAD3C1",
+        "gasUsed": 467940,
+        "timestamp": 1784822537
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784822584,
+        "callbackLatencySeconds": 46,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 89,
+      "success": true,
+      "totalTimeSeconds": 100,
+      "lock": {
+        "txHash": "0xa759db15fd0f6c9cac8e701893e9f848d83188ea0d0e99293a40ebc204fa890d",
+        "gasUsed": 639191,
+        "timestamp": 1784822621,
+        "blockNumber": 90745081
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-23T16:03:42.789Z",
+          "2026-07-23T16:03:58.639Z"
+        ]
+      },
+      "claim": {
+        "txHash": "84174E608D121CE922E04E7F1430BD3FA46E133FC65574C63C1C66B1B076DCE9",
+        "gasUsed": 467940,
+        "timestamp": 1784822666
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784822714,
+        "callbackLatencySeconds": 48,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 90,
+      "success": true,
+      "totalTimeSeconds": 101,
+      "lock": {
+        "txHash": "0xadca95dc19293211edaecbcc368df2a0fd1a98f1129a594591477919dc77acc5",
+        "gasUsed": 639191,
+        "timestamp": 1784822754,
+        "blockNumber": 90745169
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-23T16:05:55.438Z",
+          "2026-07-23T16:06:11.251Z"
+        ]
+      },
+      "claim": {
+        "txHash": "8032716B28258397E0814997A02DFF25EF6C8D40203D9BEE7AA42CE8C8CDE210",
+        "gasUsed": 468026,
+        "timestamp": 1784822799
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784822845,
+        "callbackLatencySeconds": 46,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 91,
+      "success": true,
+      "totalTimeSeconds": 141,
+      "lock": {
+        "txHash": "0x9e46710ccebcf84720e673502aea147c4785562cc10ace91034fa16f0232873a",
+        "gasUsed": 639191,
+        "timestamp": 1784822884,
+        "blockNumber": 90745256
+      },
+      "relay": {
+        "relayLatencySeconds": 44,
+        "polledAt": [
+          "2026-07-23T16:08:06.659Z",
+          "2026-07-23T16:08:31.682Z"
+        ]
+      },
+      "claim": {
+        "txHash": "91D21640E2AF8CAF899D841A4578AF3ACF10510E38622DB5F9228899D7F5A50A",
+        "gasUsed": 468016,
+        "timestamp": 1784822940
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784823016,
+        "callbackLatencySeconds": 76,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 92,
+      "success": true,
+      "totalTimeSeconds": 104,
+      "lock": {
+        "txHash": "0xa133aee207e4e50dce04929379bfe4181258840d187b68211cf31bffec309b12",
+        "gasUsed": 639191,
+        "timestamp": 1784833085,
+        "blockNumber": 90752057
+      },
+      "relay": {
+        "relayLatencySeconds": 34,
+        "polledAt": [
+          "2026-07-23T18:58:06.815Z",
+          "2026-07-23T18:58:22.852Z"
+        ]
+      },
+      "claim": {
+        "txHash": "3D2C5533084D8783A81003F432A667C8A9A91F6F2114F7654BA67932EAB90BCF",
+        "gasUsed": 467992,
+        "timestamp": 1784833131
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784833179,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 93,
+      "success": true,
+      "totalTimeSeconds": 94,
+      "lock": {
+        "txHash": "0xad07fb44b0958188b05f3f01c719040fc0e1005eceac343a4bafd9a3d7b6a2a8",
+        "gasUsed": 639191,
+        "timestamp": 1784833217,
+        "blockNumber": 90752145
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-23T19:00:18.483Z",
+          "2026-07-23T19:00:34.571Z"
+        ]
+      },
+      "claim": {
+        "txHash": "324E84C6FA9C21247C166209EA611CA151B6AED3738B7D6BF9D1F807324A23EE",
+        "gasUsed": 467973,
+        "timestamp": 1784833256
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784833303,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 94,
+      "success": true,
+      "totalTimeSeconds": 99,
+      "lock": {
+        "txHash": "0xd357ddb173a53827604bb567828102db6c1fa5eee95514b1ead4dde81e142a86",
+        "gasUsed": 639191,
+        "timestamp": 1784833340,
+        "blockNumber": 90752227
+      },
+      "relay": {
+        "relayLatencySeconds": 34,
+        "polledAt": [
+          "2026-07-23T19:02:21.550Z",
+          "2026-07-23T19:02:37.574Z"
+        ]
+      },
+      "claim": {
+        "txHash": "B948DC216DCF28CF9723CC434B9606CC922C0FA92B3618EAC5D52C05C826D64D",
+        "gasUsed": 468001,
+        "timestamp": 1784833384
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784833431,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 95,
+      "success": true,
+      "totalTimeSeconds": 95,
+      "lock": {
+        "txHash": "0x78bbbfb99f3d108884fae93d2d15b97733d6da24a41760a254e23ddcf080dcc0",
+        "gasUsed": 639191,
+        "timestamp": 1784833469,
+        "blockNumber": 90752313
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-23T19:04:30.167Z",
+          "2026-07-23T19:04:46.347Z"
+        ]
+      },
+      "claim": {
+        "txHash": "25C709C93A340146EB40F0801F9F328F99856EC25CA0ED3B553B6EDFA2815121",
+        "gasUsed": 467999,
+        "timestamp": 1784833510
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784833557,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 96,
+      "success": true,
+      "totalTimeSeconds": 117,
+      "lock": {
+        "txHash": "0xd9a3c3979ea223ade79e243623b59611c51248cf73b8d7fa7a61fe1872d72da3",
+        "gasUsed": 639191,
+        "timestamp": 1784833604,
+        "blockNumber": 90752405
+      },
+      "relay": {
+        "relayLatencySeconds": 44,
+        "polledAt": [
+          "2026-07-23T19:06:48.162Z",
+          "2026-07-23T19:07:08.330Z"
+        ]
+      },
+      "claim": {
+        "txHash": "D3441B89037E3396EFD65EF6D7CEC752CA2C8E71038BDA9C6115829B8C16EDDE",
+        "gasUsed": 467968,
+        "timestamp": 1784833657
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784833704,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 97,
+      "success": true,
+      "totalTimeSeconds": 97,
+      "lock": {
+        "txHash": "0xfc85c8e3683d8e5cadc56b19ef67927e56d5572e20bd463e31300e075e6dbc19",
+        "gasUsed": 639191,
+        "timestamp": 1784833739,
+        "blockNumber": 90752495
+      },
+      "relay": {
+        "relayLatencySeconds": 34,
+        "polledAt": [
+          "2026-07-23T19:09:00.952Z",
+          "2026-07-23T19:09:16.822Z"
+        ]
+      },
+      "claim": {
+        "txHash": "D17F3ECBD10ECF552EB6E9B7CDB4EE86315DD4576669D6F59B770553ECD48BA0",
+        "gasUsed": 467949,
+        "timestamp": 1784833784
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784833831,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 98,
+      "success": true,
+      "totalTimeSeconds": 96,
+      "lock": {
+        "txHash": "0xca61e0f471458ccaf68f4a7758ed43af9e9c130c5f8c05ae2902e27c24137aa6",
+        "gasUsed": 639191,
+        "timestamp": 1784833869,
+        "blockNumber": 90752580
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-23T19:11:10.057Z",
+          "2026-07-23T19:11:25.882Z"
+        ]
+      },
+      "claim": {
+        "txHash": "CAAEC885BD7E955BA1806DBC0FED85360BFD804E3B41FBD47A004F0467FE536E",
+        "gasUsed": 467983,
+        "timestamp": 1784833910
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784833957,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 99,
+      "success": true,
+      "totalTimeSeconds": 96,
+      "lock": {
+        "txHash": "0xbb4807c7f010f401d53083a5cecd91f1e863cdf439e63ed02d1542f10b0ac284",
+        "gasUsed": 639179,
+        "timestamp": 1784833994,
+        "blockNumber": 90752663
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-23T19:13:15.328Z",
+          "2026-07-23T19:13:31.372Z"
+        ]
+      },
+      "claim": {
+        "txHash": "8F85022692540BD9907417BFF76D4B8074DC4890CB922DC50AF2368FA81A0879",
+        "gasUsed": 468012,
+        "timestamp": 1784834036
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784834082,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    },
+    {
+      "run_number": 100,
+      "success": true,
+      "totalTimeSeconds": 96,
+      "lock": {
+        "txHash": "0x974ca7fba263336cf647c7e797041412d57bfb964843b966e22872f01246a336",
+        "gasUsed": 639191,
+        "timestamp": 1784834120,
+        "blockNumber": 90752747
+      },
+      "relay": {
+        "relayLatencySeconds": 33,
+        "polledAt": [
+          "2026-07-23T19:15:21.190Z",
+          "2026-07-23T19:15:37.435Z"
+        ]
+      },
+      "claim": {
+        "txHash": "61B62286CFD72817AF932B11BEA1651D7F778EB0466864587B6DEA5ABCB88E23",
+        "gasUsed": 468003,
+        "timestamp": 1784834162
+      },
+      "burn": {
+        "mode": "automatic-callback",
+        "timestamp": 1784834209,
+        "callbackLatencySeconds": 47,
+        "wasCallback": true
+      }
+    }
+  ],
+  "summary": {
+    "totalRuns": 100,
+    "successfulRuns": 50,
+    "lockGas": {
+      "mean": 639907.16,
+      "min": 639179,
+      "max": 675071,
+      "stdDev": 5023.41
+    },
+    "claimGas": {
+      "mean": 467707.32,
+      "min": 466792,
+      "max": 468026,
+      "stdDev": 366.29
+    },
+    "burnGas": {
+      "mean": 0,
+      "min": 0,
+      "max": 0,
+      "stdDev": 0
+    },
+    "relayLatency": {
+      "mean": 33.7,
+      "min": 17,
+      "max": 49,
+      "stdDev": 5.03
+    },
+    "totalTime": {
+      "mean": 102.56,
+      "min": 80,
+      "max": 164,
+      "stdDev": 15.65
+    },
+    "callbackSuccessRate": 1.0,
+    "abortedRuns": 50,
+    "abortedBeforeLock": 50,
+    "callbackRuns": 50
+  },
+  "summaryProvenance": "El campo callbackSuccessRate contenia un valor fijo de 0.8 escrito a mano en el script (placeholder), no medido. Se recalculo a partir del modo de cierre registrado en cada corrida completada. Se agregaron abortedRuns/abortedBeforeLock para que totalRuns no se lea como tasa de exito: las 50 corridas abortadas fallaron al enviar la transaccion inicial por agotamiento del saldo de comisiones de relay en la billetera del operador, y ninguna produjo bloqueo en origen. El resto del summary no se modifico. Copia previa: evaluation-results.json.orig-summary"
+}
