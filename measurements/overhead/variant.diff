@@ -1,0 +1,15 @@
+52c52
+< contract BridgeHTLC is AxelarExecutable, ReentrancyGuard {
+---
+> contract BridgeHTLCNoSemantic is AxelarExecutable, ReentrancyGuard {
+279,280d278
+<         // Get indicatorId for semantic binding (read-only, safe before state update)
+<         bytes32 indicatorId = token.getIndicatorId(tokenId);
+309d306
+<             indicatorId,
+426d422
+<         bytes32 indicatorId,
+434d429
+<         string memory indicatorIdHex = _bytes32ToHexString(indicatorId);
+439d433
+<             '"indicator_id":"', indicatorIdHex, '",',
