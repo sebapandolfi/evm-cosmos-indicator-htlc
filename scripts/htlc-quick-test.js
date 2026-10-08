@@ -19,12 +19,12 @@ const { getGasSettings, getPolygonProvider, formatGasInfo } = require('./gas-con
 // Contract addresses (deployed on mainnet)
 const CONFIG = {
     polygon: {
-        token1155: '0xeDD6b12bFAC489Bc18Cdda2eE73988420C79dDfF',
-        bridge: '0xB3ac9Ef1872c5be924dbB05a92e0150B601831Aa',
+        token1155: process.env.POLYGON_TOKEN1155 || '0xeDD6b12bFAC489Bc18Cdda2eE73988420C79dDfF',
+        bridge: process.env.POLYGON_BRIDGE || '0xB3ac9Ef1872c5be924dbB05a92e0150B601831Aa',
     },
     neutron: {
-        contract: 'neutron12ccw58xsmyukfya6nm4j3k5588kajaj9za6cfxwxng3uf9xqrfusgmf4kz',
-        rpc: 'https://rpc-kralum.neutron-1.neutron.org',
+        contract: process.env.NEUTRON_BRIDGE_CONTRACT || 'neutron12ccw58xsmyukfya6nm4j3k5588kajaj9za6cfxwxng3uf9xqrfusgmf4kz',
+        rpc: process.env.NEUTRON_RPC || 'https://rpc-kralum.neutron-1.neutron.org',
     },
     stateFile: path.join(__dirname, 'htlc-state.json'),
 };
@@ -65,7 +65,10 @@ async function lockTokens(amount = '10', recipient = 'neutron1n4ywn62cl3p6uzj0l8
     // Generate secret
     const secret = '0x' + crypto.randomBytes(32).toString('hex');
     const hashlock = ethers.utils.keccak256(secret);
-    const timelock = Math.floor(Date.now() / 1000) + 3600; // 1 hour
+    // 1 hour minimum + 10 min buffer: block.timestamp at inclusion time is
+    // later than Date.now() at submission time, so an exact +3600 reverts
+    // with "Timelock too short" whenever inclusion takes more than a second.
+    const timelock = Math.floor(Date.now() / 1000) + 3600 + 600;
     const tokenId = 1;
     const lockAmount = ethers.utils.parseEther(amount);
 
@@ -85,6 +88,7 @@ async function lockTokens(amount = '10', recipient = 'neutron1n4ywn62cl3p6uzj0l8
 
     // Lock tokens
     console.log('\nLocking tokens...');
+    const bounty = ethers.utils.parseEther(process.env.BOUNTY_POL || '0.1');
     const lockTx = await bridge.lockForBurn(
         tokenId,
         lockAmount,
@@ -93,9 +97,10 @@ async function lockTokens(amount = '10', recipient = 'neutron1n4ywn62cl3p6uzj0l8
         recipient,
         'neutron',
         CONFIG.neutron.contract,
+        bounty,
         {
             ...gasSettings,
-            value: ethers.utils.parseEther('1'), // GMP gas
+            value: ethers.utils.parseEther('1'), // GMP gas + bounty (bounty stays escrowed)
         }
     );
 

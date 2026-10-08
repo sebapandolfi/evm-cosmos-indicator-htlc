@@ -11,9 +11,33 @@ const { GasPrice } = require('@cosmjs/stargate');
 const fs = require('fs');
 const path = require('path');
 
-// Configuration
-const NEUTRON_RPC = 'https://rpc-kralum.neutron-1.neutron.org';
+// Configuration - candidate RPCs, tried in order until one responds.
+// NEUTRON_RPC (if set in .env) is always tried first.
+const RPC_CANDIDATES = [
+    process.env.NEUTRON_RPC,
+    'https://rpc-lb.neutron.org',
+    'https://neutron-rpc.publicnode.com',
+    'https://neutron-rpc.polkachu.com',
+    'https://rpc.neutron.nodestake.top',
+    'https://rpc-kralum.neutron-1.neutron.org',
+].filter(Boolean);
 const CHAIN_ID = 'neutron-1';
+
+async function connectSigner(wallet, gasPrice) {
+    for (const url of RPC_CANDIDATES) {
+        try {
+            const client = await Promise.race([
+                SigningCosmWasmClient.connectWithSigner(url, wallet, { gasPrice }),
+                new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 10000)),
+            ]);
+            console.log(`RPC: ${url}`);
+            return client;
+        } catch (e) {
+            console.warn(`RPC unavailable (${(e.message || '').slice(0, 50)}): ${url}`);
+        }
+    }
+    throw new Error('No Neutron RPC reachable; set NEUTRON_RPC to a working endpoint (see https://github.com/cosmos/chain-registry/blob/master/neutron/chain.json)');
+}
 
 async function main() {
     console.log('='.repeat(60));
@@ -34,13 +58,9 @@ async function main() {
     const [account] = await wallet.getAccounts();
     console.log(`\nDeployer: ${account.address}`);
 
-    // Connect to Neutron
+    // Connect to Neutron (first reachable RPC)
     const gasPrice = GasPrice.fromString('0.025untrn');
-    const client = await SigningCosmWasmClient.connectWithSigner(
-        NEUTRON_RPC,
-        wallet,
-        { gasPrice }
-    );
+    const client = await connectSigner(wallet, gasPrice);
 
     // Check balance
     const balance = await client.getBalance(account.address, 'untrn');
@@ -62,30 +82,53 @@ async function main() {
     const wasmCode = fs.readFileSync(wasmPath);
     console.log(`\nWASM size: ${wasmCode.length} bytes`);
 
-    // Upload contract
-    console.log('\n--- Uploading Contract ---');
-    const uploadResult = await client.upload(
-        account.address,
-        wasmCode,
-        'auto',
-        'HTLC Bridge Receiver'
-    );
-    console.log(`Code ID: ${uploadResult.codeId}`);
-    console.log(`Transaction: ${uploadResult.transactionHash}`);
+    // Upload contract (or reuse an existing code ID: CODE_ID=5347 skips upload)
+    let codeId;
+    if (process.env.CODE_ID) {
+        codeId = parseInt(process.env.CODE_ID, 10);
+        console.log(`\n--- Reusing Code ID ${codeId} (upload skipped) ---`);
+    } else {
+        console.log('\n--- Uploading Contract ---');
+        const uploadResult = await client.upload(
+            account.address,
+            wasmCode,
+            'auto',
+            'HTLC Bridge Receiver'
+        );
+        codeId = uploadResult.codeId;
+        console.log(`Code ID: ${codeId}`);
+        console.log(`Transaction: ${uploadResult.transactionHash}`);
+    }
 
     // Instantiate contract
     console.log('\n--- Instantiating Contract ---');
     const instantiateMsg = {
-        channel: 'channel-18', // Axelar channel on Neutron
+        // Neutron's IBC transfer channel with Axelar (axelarnet). Verified on
+        // mainnet: inbound GMP packets arrive on neutron channel-2 (axelar
+        // side channel-78); outbound must use the same pair. channel-18 was
+        // wrong and is kept out deliberately.
+        channel: process.env.NEUTRON_AXELAR_CHANNEL || 'channel-2',
         token_name: 'Bridged Indicator Token',
         token_symbol: 'bIND',
         decimals: 18,
         axelar_gateway: null,
+        // Axelar GMP account: receiver of IBC transfers carrying GMP memos.
+        // Required for on-chain outbound GMP (automatic callback + reverse
+        // direction). VERIFY the current address against the Axelar docs
+        // (https://docs.axelar.dev -> GMP from Cosmos) before deploying.
+        axelar_gmp_account: process.env.AXELAR_GMP_ACCOUNT || null,
+        // Axelar relayer fee recipient: REQUIRED for automatic execution of
+        // Cosmos->EVM messages (callback / reverse direction). Source:
+        // evm-cosmos-gmp-sample/native-integration README (mainnet address).
+        axelar_fee_recipient: process.env.AXELAR_FEE_RECIPIENT
+            || 'axelar1aythygn6z5thymj6tmzfwekzh05ewg3l7d6y89',
+        // Protocol-minimum bounty (untrn) for reverse-direction locks
+        min_bounty: process.env.MIN_BOUNTY_UNTRN || '50000',
     };
 
     const instantiateResult = await client.instantiate(
         account.address,
-        uploadResult.codeId,
+        codeId,
         instantiateMsg,
         'HTLC Bridge Receiver',
         'auto',
@@ -97,15 +140,23 @@ async function main() {
 
     // Create a test token class
     console.log('\n--- Creating Test Token Class ---');
+    // Mirror the EVM registration EXACTLY (deploy-htlc-evm.js): same profile
+    // and data hashes, indicator_id = keccak256(profile_hash). The mirrored
+    // registries must agree or prepare_mint rejects with IndicatorMismatch.
+    const { ethers } = require('ethers');
+    const profileHash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes('test_indicator_profile_v1'));
+    const dataHash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes('test_indicator_data_v1'));
+    const indicatorId = ethers.utils.keccak256(profileHash);
+    console.log(`Mirrored indicator_id: ${indicatorId}`);
     const createClassMsg = {
         create_token_class: {
             token_id: '1',
-            indicator_id: '0x' + Buffer.from('test_indicator_id').toString('hex').padEnd(64, '0'),
+            indicator_id: indicatorId,
             indicator_type: 'CO2_REMOVAL',
             unit: 'kgCO2e',
-            methodology_id: 'METHODOLOGY_001',
-            profile_hash: '0x' + Buffer.from('test_profile_hash').toString('hex').padEnd(64, '0'),
-            data_hash: '0x' + Buffer.from('test_data_hash').toString('hex').padEnd(64, '0'),
+            methodology_id: 'METHODOLOGY_001', // mirror of the EVM registration
+            profile_hash: profileHash,
+            data_hash: dataHash,
         }
     };
 
@@ -123,7 +174,7 @@ async function main() {
         chainId: CHAIN_ID,
         deployer: account.address,
         timestamp: new Date().toISOString(),
-        codeId: uploadResult.codeId,
+        codeId: codeId,
         contract: instantiateResult.contractAddress,
         testTokenClass: {
             tokenId: '1',
@@ -141,7 +192,7 @@ async function main() {
     console.log('\n' + '='.repeat(60));
     console.log('DEPLOYMENT COMPLETE');
     console.log('='.repeat(60));
-    console.log(`Code ID: ${uploadResult.codeId}`);
+    console.log(`Code ID: ${codeId}`);
     console.log(`Contract: ${instantiateResult.contractAddress}`);
     console.log('='.repeat(60));
 }
