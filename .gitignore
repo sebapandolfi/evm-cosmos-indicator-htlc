@@ -27,3 +27,19 @@ htlc-state*.json
 
 # Logs
 *.log
+artifacts-local/
+
+# LaTeX build artifacts
+*.aux
+*.out
+*.synctex.gz
+
+# TLA+ / TLC: the jar is downloaded separately; error traces and
+# fingerprint state are regenerated on every run
+formal/tla2tools.jar
+*_TTrace_*
+formal/**/metadir_*/
+
+# TLC logs are published results, not build noise
+!formal/logs/*.log
+!formal/v1/logs/*.log
