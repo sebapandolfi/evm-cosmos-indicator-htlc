@@ -1,0 +1,110 @@
+TLC2 Version 2026.03.02.213938 (rev: 54e73ad)
+Running breadth-first search Model-Checking with fp 37 and seed 4517614895004521960 with 1 worker on 4 cores with 869MB heap and 64MB offheap memory [pid: 108] (Linux 6.8.0-136-generic aarch64, Ubuntu 11.0.31 x86_64, MSBDiskFPSet, DiskStateQueue).
+Parsing file /sessions/sleepy-elegant-mccarthy/mnt/maestria/evm-cosmos-indicator-htlc/formal/HTLCCallback.tla
+Parsing file /tmp/tlc-13344522363622813768/Naturals.tla (jar:file:/sessions/sleepy-elegant-mccarthy/mnt/maestria/evm-cosmos-indicator-htlc/formal/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /tmp/tlc-13344522363622813768/_TLCTrace.tla (jar:file:/sessions/sleepy-elegant-mccarthy/mnt/maestria/evm-cosmos-indicator-htlc/formal/tla2tools.jar!/tla2sany/StandardModules/_TLCTrace.tla)
+Parsing file /tmp/tlc-13344522363622813768/TLC.tla (jar:file:/sessions/sleepy-elegant-mccarthy/mnt/maestria/evm-cosmos-indicator-htlc/formal/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Parsing file /tmp/tlc-13344522363622813768/TLCExt.tla (jar:file:/sessions/sleepy-elegant-mccarthy/mnt/maestria/evm-cosmos-indicator-htlc/formal/tla2tools.jar!/tla2sany/StandardModules/TLCExt.tla)
+Parsing file /tmp/tlc-13344522363622813768/Sequences.tla (jar:file:/sessions/sleepy-elegant-mccarthy/mnt/maestria/evm-cosmos-indicator-htlc/formal/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Parsing file /tmp/tlc-13344522363622813768/FiniteSets.tla (jar:file:/sessions/sleepy-elegant-mccarthy/mnt/maestria/evm-cosmos-indicator-htlc/formal/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /tmp/tlc-13344522363622813768/Integers.tla (jar:file:/sessions/sleepy-elegant-mccarthy/mnt/maestria/evm-cosmos-indicator-htlc/formal/tla2tools.jar!/tla2sany/StandardModules/Integers.tla)
+Semantic processing of module Naturals
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module Integers
+Semantic processing of module TLCExt
+Semantic processing of module _TLCTrace
+Semantic processing of module HTLCCallback
+Linting of module TLCExt
+Linting of module _TLCTrace
+Linting of module HTLCCallback
+Starting... (2026-08-23 21:48:58)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-08-23 21:48:58.
+Error: Invariant I3a is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ msgId = "noid"
+/\ srcTok = "none"
+/\ prepInFlight = FALSE
+/\ dstTok = "none"
+/\ srcAmt = 0
+/\ msgAmt = 0
+/\ dstAmt = 0
+/\ cbDropped = FALSE
+/\ t = 0
+/\ sigmaD = "NONE"
+/\ prepDropped = FALSE
+/\ cbInFlight = FALSE
+/\ sigmaS = "NONE"
+/\ dstId = "noid"
+
+State 2: <LockForBurn line 137, col 5 to line 144, col 55 of module HTLCCallback>
+/\ msgId = "iA"
+/\ srcTok = "cA"
+/\ prepInFlight = TRUE
+/\ dstTok = "none"
+/\ srcAmt = 1
+/\ msgAmt = 1
+/\ dstAmt = 0
+/\ cbDropped = FALSE
+/\ t = 0
+/\ sigmaD = "NONE"
+/\ prepDropped = FALSE
+/\ cbInFlight = FALSE
+/\ sigmaS = "LOCKED"
+/\ dstId = "noid"
+
+State 3: <RelayForgePrepare line 174, col 5 to line 181, col 69 of module HTLCCallback>
+/\ msgId = "iB"
+/\ srcTok = "cA"
+/\ prepInFlight = TRUE
+/\ dstTok = "none"
+/\ srcAmt = 1
+/\ msgAmt = 1
+/\ dstAmt = 0
+/\ cbDropped = FALSE
+/\ t = 0
+/\ sigmaD = "NONE"
+/\ prepDropped = FALSE
+/\ cbInFlight = FALSE
+/\ sigmaS = "LOCKED"
+/\ dstId = "noid"
+
+State 4: <RelayDeliverPrepare line 153, col 5 to line 162, col 69 of module HTLCCallback>
+/\ msgId = "iB"
+/\ srcTok = "cA"
+/\ prepInFlight = TRUE
+/\ dstTok = "cB"
+/\ srcAmt = 1
+/\ msgAmt = 1
+/\ dstAmt = 1
+/\ cbDropped = FALSE
+/\ t = 0
+/\ sigmaD = "PENDING"
+/\ prepDropped = FALSE
+/\ cbInFlight = FALSE
+/\ sigmaS = "LOCKED"
+/\ dstId = "iB"
+
+State 5: <ClaimMint line 186, col 5 to line 191, col 80 of module HTLCCallback>
+/\ msgId = "iB"
+/\ srcTok = "cA"
+/\ prepInFlight = TRUE
+/\ dstTok = "cB"
+/\ srcAmt = 1
+/\ msgAmt = 1
+/\ dstAmt = 1
+/\ cbDropped = FALSE
+/\ t = 0
+/\ sigmaD = "MINTED"
+/\ prepDropped = FALSE
+/\ cbInFlight = TRUE
+/\ sigmaS = "LOCKED"
+/\ dstId = "iB"
+
+356 states generated, 161 distinct states found, 111 states left on queue.
+The depth of the complete state graph search is 5.
+Finished in 00s at (2026-08-23 21:48:58)
+Trace exploration spec path: ./HTLCCallback_TTrace_1787532538.tla
