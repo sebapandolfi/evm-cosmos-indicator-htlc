@@ -39,3 +39,6 @@ pub mod entry {
         contract::query(deps, env, msg)
     }
 }
+
+#[cfg(test)]
+mod tests_receiver;
