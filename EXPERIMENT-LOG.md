@@ -35,7 +35,7 @@ contracts.
 | 4 | Receiver | `neutron1tfy2r0pxmyp8lkng2wy0c0a9gaqwkuqljhs2h8txhy27j23q8zrsf9347m` | Code 5348; feerefunder fix |
 | 5 | Receiver | `neutron1e5tfeas9y2y68cwwrt0jmjvp238wnd4z7zwp02j4s9kws9sn3hksxu08er` | Relayer `fee` field added to the GMP memo |
 | 5 | BridgeHTLC | `0x5A56AeC40c353a251Aa87Fde6083dB5154e4BdA1` | Deploy `0x51e2f8adea3fa2cde550d69e05de955ebc2af3678bbcb8fcc6ff6a7a1fad29f6` |
-| 6 | — | — | First fully automatic on-chain callback (S1) and both reverse-direction runs (S2); no minimum bounty yet |
+| 6 | — | — | First fully automatic on-chain callback (S1) and the first reverse-direction run (S2); no minimum bounty yet |
 
 ## Failures induced or encountered (July 5, 2026)
 
@@ -78,6 +78,16 @@ archived in `scripts/evaluation-results-debug-session.json`.
 → 93 s end to end. The relay asymmetry inverts with respect to the forward
 direction: the slow leg is always the one that originates on Cosmos.
 
+A second reverse run was executed on July 19, 2026 against the evaluated
+generation 7 (`claimMint` on BridgeHTLC `0x810B…5F6b`): Neutron
+`lock_for_burn` `EDF4DA775B6875055B680867FAA1D92328455B3A2753961C8832B63076C9E2F2`
+(458,503 gas) → `claimMint`
+`0xdb382a858f0f8a6b162409ab892cc98a046f41c8f567d7d29837a45d57f1e7d2`
+(225,796 gas) → automatic callback → 93 s end to end (see
+`scripts/reverse-results.json`). An earlier version of this log attributed
+both reverse runs to generation 6; the on-chain `to` address of the second
+`claimMint` shows it ran on generation 7.
+
 Two escrows stranded by F4 were recovered with `scripts/refund-locks.js`:
 refunds `0x1f6f511b…` and `0x1e7cbdac…` (tokens and 0.2 POL in bounties
 returned).
@@ -95,3 +105,16 @@ minimum bounty are archived in `scripts/evaluation-results-pre-minbounty.json`.
 - Neutron ↔ Axelar: channel-2 ↔ channel-78.
 - IBC-hook intermediary for channel-2:
   `Bech32(sha256(sha256("ibc-wasm-hook-intermediary") || "channel-2/" || <Axelar GMP account>))`.
+
+## Callback burns of the sample runs (generation 7)
+
+The success-path burn on Polygon is submitted by an Axelar relayer (not by
+the author) through `execute`. For the runs reproduced in the thesis appendix:
+
+| Run | Callback `execute` tx | Gas |
+|---|---|---|
+| 1 | `0xc78bb5b4adea7b6d3bc5d3d74d0b150e325458a21c9ff83309da90fe7c678d27` | 154,886 (first run, storage initialisation) |
+| 2 | `0x7b594db1c8790707295fd7b403d29ab7a79736213eed49316f677df6bce954d4` | 136,946 |
+| 16 | `0xde4a2604b597a5eb2bbcf5d3ded3482fa76398f39d775791d84aeac1b4bc8692` | 136,946 |
+| 67 | `0x75c2faffe70bfc3119a7c8bd9bbf509cd88cef2e62462792dc64a3aee06daa64` | 136,946 |
+| 100 | `0xf8973bcc760762b1dd53d251f5ac3964868787e2f1dd8296f477340d15690ebb` | 136,946 |
