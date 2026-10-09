@@ -117,7 +117,7 @@ node scripts/htlc-reverse-test.js run
 
 | File | Contents |
 |------|----------|
-| `scripts/evaluation-results.json` | Campaign: 100 scheduled runs, 50 completed (runs 17–66 aborted before locking when the operator wallet ran out of relay-fee funds); transaction hashes, gas and latency per run |
+| `scripts/evaluation-results.json` | Campaign: 100 scheduled runs, 50 completed. Runs 17–66 did lock on Polygon, but their `claim_mint` failed when the operator wallet ran out of the AXL needed for the callback fee; their escrows were recovered with `refundBurn` (on-chain counters: `totalLocked` 100, `totalRefunded` 50, `totalClaimed` 50). The `abortedBeforeLock` field counts runs whose record lacks a lock entry, not runs without an on-chain lock. Transaction hashes, gas and latency per run |
 | `scripts/reverse-results.json` | The two reverse-direction runs |
 | `scripts/campaign-cost.json`, `.csv` | Cost decomposition for the 34 runs with price data available |
 | `scripts/latency-cdf.csv`, `latency-cdf.png` | End-to-end latency CDF |
