@@ -34,3 +34,17 @@ POL = US$0.0785):
 Destination guard (CosmWasm prepare_mint: one TOKEN_CLASSES read and a string
 comparison) not measured; it runs on Neutron within the forward delivery,
 which the relay settles against the POL prepay.
+
+## Sensitivity to the gas price
+
+The numerator (24,345 gas) is paid in source gas, so its POL value scales
+with the gas price; the denominator does not (the forward relay is settled
+against destination consumption and the callback fee is paid in AXL). The
+campaign used a fixed 100 gwei priority fee over a median base fee of
+249.6 gwei (34 lock blocks):
+
+| Gas price | Overhead (US$) | vs net messaging | vs net transfer |
+|---|---|---|---|
+| Campaign effective, 349.6 gwei | 0.000668 | 1.29 % | 0.97 % |
+| Base fee + 30 gwei tip, 279.6 gwei | 0.000534 | 1.03 % | 0.77 % |
+| Base fee only, 249.6 gwei | 0.000477 | 0.92 % | 0.69 % |
